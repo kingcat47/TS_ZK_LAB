@@ -37,6 +37,28 @@
     gap: $spacing-32;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-12;
+}
+
+.searchBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  border-radius: $radius-8;
+
+  &:hover {
+    color: $color-text;
+    background-color: $color-surface-subtle;
+  }
+}
+
 .userArea {
   display: flex;
   align-items: center;

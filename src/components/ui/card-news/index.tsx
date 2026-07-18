@@ -1,4 +1,7 @@
 import { useNavigate } from "react-router-dom";
+import { Bookmark } from "lucide-react";
+
+import { useBookmarks } from "@/contexts/BookmarksContext";
 
 import s from "./styles.module.scss";
 
@@ -11,20 +14,22 @@ export interface CardNewsProps {
   date?: string;
 }
 
-export default function CardNews({
-  id,
-  thumbnail,
-  title,
-  description,
-  category,
-  date,
-}: CardNewsProps) {
+export default function CardNews({ id, thumbnail, title, description, category, date }: CardNewsProps) {
   const navigate = useNavigate();
+  const { isCardNewsBookmarked, toggleCardNews } = useBookmarks();
+  const bookmarked = isCardNewsBookmarked(Number(id));
 
   return (
     <article className={s.card} onClick={() => navigate(`/card-news/${id}`)}>
       <div className={s.thumbnail}>
         <img src={thumbnail} alt={title} />
+        <button
+          className={[s.bookmarkBtn, bookmarked ? s.bookmarked : ""].join(" ")}
+          onClick={(e) => { e.stopPropagation(); toggleCardNews(Number(id)); }}
+          title={bookmarked ? "찜 해제" : "찜하기"}
+        >
+          <Bookmark size={16} fill={bookmarked ? "currentColor" : "none"} />
+        </button>
       </div>
       <div className={s.content}>
         {category && <span className={s.category}>{category}</span>}

@@ -20,6 +20,7 @@
 }
 
 .thumbnail {
+  position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -29,6 +30,33 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+}
+
+.bookmarkBtn {
+  position: absolute;
+  top: $spacing-8;
+  right: $spacing-8;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.85);
+  color: $color-text-subtle;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: $color-white;
+    color: $color-text;
+  }
+
+  &.bookmarked {
+    background-color: $color-surface-brand;
+    color: $color-text-white;
   }
 }
 
