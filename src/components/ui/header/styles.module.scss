@@ -37,6 +37,41 @@
     gap: $spacing-32;
 }
 
+.userArea {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-full;
+  object-fit: cover;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: $radius-8;
+
+  &:hover {
+    color: $color-text;
+    background-color: $color-surface-subtle;
+  }
+}
+
 .desktop_only {
   display: flex;
   align-items: center;

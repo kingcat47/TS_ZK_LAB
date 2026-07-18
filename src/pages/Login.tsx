@@ -8,7 +8,7 @@ export default function LoginPage() {
     <>
     <Header/>
     <Authlayout>
-      <LoginModal/>
+      <LoginModal providers={["google"]}/>
     </Authlayout>
     </>
   )
