@@ -1,0 +1,254 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-16;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-text;
+  padding-bottom: $spacing-12;
+  border-bottom: 2px solid $color-border;
+}
+
+.paperList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+}
+
+.paperCard {
+  border: 1px solid $color-border;
+  border-radius: $radius-12;
+  overflow: hidden;
+}
+
+.paperHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-14 $spacing-16;
+  cursor: pointer;
+  background-color: $color-surface;
+  transition: background-color 0.1s ease;
+
+  &:hover { background-color: $color-surface-subtle; }
+}
+
+.paperHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-10;
+  min-width: 0;
+}
+
+.paperHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+  color: $color-text-subtle;
+  flex-shrink: 0;
+}
+
+.orderBadge {
+  width: 24px;
+  height: 24px;
+  border-radius: $radius-full;
+  background-color: $color-surface-brand;
+  color: $color-text-white;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.paperTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typeBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  background-color: $color-surface-subtle;
+  border-radius: $radius-full;
+  padding: 2px 8px;
+  flex-shrink: 0;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: $radius-8;
+
+  &:hover { color: #DC2626; background-color: #FEF2F2; }
+}
+
+.paperBody {
+  padding: $spacing-16;
+  border-top: 1px solid $color-border;
+  background-color: $color-surface;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-14;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-12;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.input {
+  padding: $spacing-10 $spacing-12;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  font-size: 14px;
+  color: $color-text;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus { border-color: $color-surface-brand; }
+  &::placeholder { color: $color-text-subtle; }
+}
+
+.textarea {
+  padding: $spacing-10 $spacing-12;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  font-size: 14px;
+  color: $color-text;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+  transition: border-color 0.15s ease;
+
+  &:focus { border-color: $color-surface-brand; }
+  &::placeholder { color: $color-text-subtle; }
+}
+
+.typeGroup {
+  display: flex;
+  gap: $spacing-8;
+}
+
+.typeBtn {
+  padding: 6px 14px;
+  border-radius: $radius-full;
+  border: 1px solid $color-border;
+  background-color: $color-surface;
+  font-size: 13px;
+  color: $color-text-subtle;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover { border-color: $color-surface-brand; color: $color-text-brand-heavy; }
+
+  &.selected {
+    background-color: $color-surface-brand;
+    border-color: $color-surface-brand;
+    color: $color-text-white;
+    font-weight: 600;
+  }
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  padding: $spacing-12;
+  background-color: $color-surface-subtle;
+  border-radius: $radius-10;
+  margin-top: $spacing-8;
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summaryNum {
+  font-size: 12px;
+  font-weight: 700;
+  color: $color-text-subtle;
+}
+
+.addSmallBtn {
+  background: none;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  cursor: pointer;
+
+  &:hover { border-color: $color-surface-brand; color: $color-text-brand-heavy; }
+}
+
+.removeSmallBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+
+  &:hover { color: #DC2626; }
+}
+
+.addPaperBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-8;
+  padding: $spacing-14;
+  border: 2px dashed $color-border;
+  border-radius: $radius-12;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $color-surface-brand;
+    color: $color-text-brand-heavy;
+    background-color: $color-surface-brand-subtle;
+  }
+}

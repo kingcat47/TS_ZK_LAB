@@ -5,3 +5,4 @@ export { default as PaperList } from "./PaperList";
 export { default as PaperDetail } from "./PaperDetail";
 export { default as Papers } from "./Papers";
 export { default as Bookmarks } from "./Bookmarks";
+export { default as Admin } from "./Admin";
