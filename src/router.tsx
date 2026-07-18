@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { Home, LoginPage } from "@/pages";
+import { Home, LoginPage, CardNewsDetail } from "@/pages";
 import { RootLayout } from "@/components/layout";
 
 const Router = createBrowserRouter([
@@ -8,6 +8,7 @@ const Router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { path: "/", element: <Home /> },
+      { path: "/card-news/:id", element: <CardNewsDetail /> },
     ],
   },
   {

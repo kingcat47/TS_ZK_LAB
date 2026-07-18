@@ -1,4 +1,6 @@
 export { default as Button } from "./button";
+export { default as CardNews } from "./card-news";
+export type { CardNewsProps } from "./card-news";
 export { default as Checkbox } from "./checkbox";
 export { default as Header } from "./header";
 export { default as Input } from "./input";
