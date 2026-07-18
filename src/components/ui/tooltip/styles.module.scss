@@ -1,0 +1,42 @@
+.wrapper {
+  position: relative;
+  display: inline-block;
+
+  &:hover .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background-color: $color-text;
+  color: $color-text-white;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: $radius-8;
+  width: max-content;
+  max-width: 260px;
+  white-space: pre-wrap;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 10;
+
+  // 말풍선 꼬리
+  &::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: $color-text;
+  }
+}
