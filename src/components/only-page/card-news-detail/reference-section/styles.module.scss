@@ -75,3 +75,17 @@
     text-decoration: underline;
   }
 }
+
+.allLink {
+  display: block;
+  margin-top: $spacing-8;
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  text-decoration: none;
+  text-align: right;
+
+  &:hover {
+    color: $color-text;
+  }
+}

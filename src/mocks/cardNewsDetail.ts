@@ -46,20 +46,10 @@ export const MOCK_CARD_NEWS_DETAIL: CardNewsDetailData[] = [
       ],
     ],
     references: [
-      {
-        title: "Global Economic Prospects 2024",
-        authors: "World Bank Group",
-        source: "World Bank",
-        year: 2024,
-        url: "https://www.worldbank.org",
-      },
-      {
-        title: "World Economic Outlook: Navigating Global Divergences",
-        authors: "IMF Research Department",
-        source: "IMF",
-        year: 2024,
-        url: "https://www.imf.org",
-      },
+      { paperId: 1, title: "The General Theory of Employment, Interest and Money", authors: "John Maynard Keynes", source: "Macmillan", year: 1936 },
+      { paperId: 2, title: "A Monetary History of the United States, 1867–1960", authors: "Milton Friedman, Anna J. Schwartz", source: "Princeton University Press", year: 1963 },
+      { paperId: 3, title: "Global Economic Prospects 2024", authors: "World Bank Group", source: "World Bank Publications", year: 2024 },
+      { paperId: 4, title: "The Limits of Monetary Policy in the Current Environment", authors: "Lawrence H. Summers", source: "Brookings Institution", year: 2023 },
     ],
   },
 ];

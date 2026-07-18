@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-32;
+  width: 100%;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-12;
+  padding-left: $spacing-20;
+  border-left: 3px solid $color-surface-brand;
+}
+
+.heading {
+  font-size: 16px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.content {
+  font-size: 15px;
+  line-height: 1.8;
+  color: $color-text;
+}

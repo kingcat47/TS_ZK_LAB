@@ -21,7 +21,7 @@ export default function CardNewsDetail() {
       <CardNewsViewer slides={data.slides} title={data.title} />
       <TermSection terms={data.terms} />
       <ExplainSection paragraphs={data.paragraphs} />
-      <ReferenceSection references={data.references} />
+      <ReferenceSection cardNewsId={Number(id)} references={data.references} />
     </MainLayout>
   );
 }
