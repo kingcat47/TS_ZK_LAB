@@ -1,0 +1,38 @@
+.section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-24;
+  padding-top: $spacing-40;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+}
+
+.pageTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: $color-text-subtle;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-24;
+
+  @media (max-width: 1023px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}

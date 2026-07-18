@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { Home, LoginPage, CardNewsDetail, PaperList, PaperDetail } from "@/pages";
+import { Home, LoginPage, CardNewsDetail, PaperList, PaperDetail, Papers, Bookmarks } from "@/pages";
 import { RootLayout } from "@/components/layout";
 
 const Router = createBrowserRouter([
@@ -11,6 +11,8 @@ const Router = createBrowserRouter([
       { path: "/card-news/:id", element: <CardNewsDetail /> },
       { path: "/card-news/:id/papers", element: <PaperList /> },
       { path: "/card-news/:id/papers/:paperId", element: <PaperDetail /> },
+      { path: "/papers", element: <Papers /> },
+      { path: "/bookmarks", element: <Bookmarks /> },
     ],
   },
   {

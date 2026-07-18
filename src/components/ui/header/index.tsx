@@ -1,4 +1,4 @@
-import { Home, LayoutGrid, ListVideo, ShoppingCart } from "lucide-react";
+import { Newspaper, BookOpen, Bookmark } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui";
 import HeaderItem from "@/components/ui/header/header-item";
@@ -24,34 +24,28 @@ export default function Header() {
           </Link>
           <nav className={s.items} aria-label="주요 메뉴">
             <HeaderItem
-              text={"홈"}
-              icon={Home}
-              href={"/"}
+              text="카드뉴스"
+              icon={Newspaper}
+              href="/"
               isActive={pathname === "/"}
             />
             <HeaderItem
-              text={"서비스"}
-              icon={ShoppingCart}
-              href={"/service"}
-              isActive={pathname.startsWith("/service")}
+              text="논문"
+              icon={BookOpen}
+              href="/papers"
+              isActive={pathname.startsWith("/papers")}
             />
             <HeaderItem
-              text={"컨텐츠"}
-              icon={ListVideo}
-              href={"/my-contents"}
-              isActive={pathname.startsWith("/my-contents")}
-            />
-            <HeaderItem
-              text={"내 구독"}
-              icon={LayoutGrid}
-              href={"/subscription"}
-              isActive={pathname.startsWith("/subscription")}
+              text="찜한 목록"
+              icon={Bookmark}
+              href="/bookmarks"
+              isActive={pathname.startsWith("/bookmarks")}
             />
           </nav>
-        </div>          
-          <Button size="medium" variant="primary" onClick={() => navigate("/auth/login")}>
-            로그인
-          </Button>
+        </div>
+        <Button size="medium" variant="primary" onClick={() => navigate("/auth/login")}>
+          로그인
+        </Button>
       </div>
     </header>
   );
