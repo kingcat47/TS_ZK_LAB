@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Newspaper, BookOpen, Bookmark, LogOut, Search } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -15,6 +15,18 @@ export default function Header() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <>
@@ -37,14 +49,25 @@ export default function Header() {
             </button>
 
             {user ? (
-              <div className={s.userArea}>
-                {user.photoURL && (
-                  <img src={user.photoURL} alt={user.displayName ?? "유저"} className={s.avatar} />
-                )}
-                <span className={s.userName}>{user.displayName}</span>
-                <button className={s.logoutBtn} onClick={() => signOut()} title="로그아웃">
-                  <LogOut size={18} />
+              <div className={s.profileWrapper} ref={dropdownRef}>
+                <button className={s.profileBtn} onClick={() => setIsDropdownOpen((v) => !v)}>
+                  {user.photoURL && (
+                    <img src={user.photoURL} alt={user.displayName ?? "유저"} className={s.avatar} />
+                  )}
+                  <span className={s.userName}>{user.displayName}</span>
                 </button>
+
+                {isDropdownOpen && (
+                  <div className={s.dropdown}>
+                    <button
+                      className={s.dropdownItem}
+                      onClick={() => { signOut(); setIsDropdownOpen(false); }}
+                    >
+                      <LogOut size={15} />
+                      로그아웃
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <Button size="medium" variant="primary" onClick={() => navigate("/auth/login")}>

@@ -20,8 +20,8 @@ export default function PaperList() {
   return (
     <MainLayout gap={40}>
       <div className={s.header}>
-        <button className={s.backBtn} onClick={() => navigate(`/card-news/${cardNewsId}`)}>
-          ← 카드뉴스로 돌아가기
+        <button className={s.backBtn} onClick={() => navigate(-1)}>
+          ← 뒤로가기
         </button>
         <h1 className={s.pageTitle}>{cardNews.title}</h1>
         <p className={s.subtitle}>관련 논문 읽기 순서 가이드</p>

@@ -31,7 +31,7 @@ export default function PaperDetail() {
   return (
     <MainLayout gap={40}>
       <div className={s.header}>
-        <button className={s.backBtn} onClick={() => navigate(`/card-news/${cardNewsId}/papers`)}>
+        <button className={s.backBtn} onClick={() => navigate(-1)}>
           ← 목록으로
         </button>
         <span className={[s.badge, TYPE_CLASS[paper.type]].join(" ")}>{paper.type} 논문</span>
