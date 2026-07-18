@@ -10,6 +10,7 @@ import SlideUploader from "@/components/only-page/admin/slide-uploader";
 import TermManager from "@/components/only-page/admin/term-manager";
 import ContentEditor from "@/components/only-page/admin/content-editor";
 import PaperManager from "@/components/only-page/admin/paper-manager";
+import PostList from "@/components/only-page/admin/post-list";
 
 import s from "./styles/admin.module.scss";
 
@@ -98,6 +99,10 @@ export default function Admin() {
         {status === "error" && (
           <div className={s.errorBanner}>저장 중 오류가 발생했습니다. 다시 시도해주세요.</div>
         )}
+
+        <div className={s.card}>
+          <PostList />
+        </div>
 
         <div className={s.card}>
           <BasicInfoForm

@@ -1,0 +1,136 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-16;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-text;
+  padding-bottom: $spacing-12;
+  border-bottom: 2px solid $color-border;
+}
+
+.empty {
+  text-align: center;
+  padding: $spacing-32;
+  color: $color-text-subtle;
+  font-size: 14px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-12;
+  padding: $spacing-12 $spacing-16;
+  border: 1px solid $color-border;
+  border-radius: $radius-10;
+  background-color: $color-surface;
+}
+
+.thumb {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: $radius-8;
+  flex-shrink: 0;
+  background-color: $color-surface-subtle;
+}
+
+.thumbPlaceholder {
+  width: 60px;
+  height: 40px;
+  border-radius: $radius-8;
+  background-color: $color-surface-subtle;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+  margin-top: 2px;
+}
+
+.category {
+  font-size: 12px;
+  color: $color-text-subtle;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: $radius-full;
+
+  &.published {
+    background-color: #D1FAE5;
+    color: #065F46;
+  }
+
+  &.draft {
+    background-color: $color-surface-subtle;
+    color: $color-text-subtle;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+  flex-shrink: 0;
+}
+
+.toggleBtn {
+  padding: 5px 12px;
+  border-radius: $radius-8;
+  border: 1px solid $color-border;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $color-surface-brand;
+    color: $color-text-brand-heavy;
+  }
+}
+
+.deleteBtn {
+  padding: 5px 12px;
+  border-radius: $radius-8;
+  border: 1px solid #FCA5A5;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #DC2626;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #FEF2F2;
+  }
+}
