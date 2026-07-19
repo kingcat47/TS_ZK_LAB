@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.svg', 'applogo.png'],
+      includeAssets: ['logo.svg', 'HomeIcon.png'],
       manifest: {
         name: 'ZKDeck',
         short_name: 'ZKDeck',
@@ -21,13 +21,13 @@ export default defineConfig({
         lang: 'ko',
         icons: [
           {
-            src: '/applogo.png',
+            src: '/HomeIcon.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/applogo.png',
+            src: '/HomeIcon.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',

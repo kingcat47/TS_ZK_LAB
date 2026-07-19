@@ -42,7 +42,7 @@ export default function PWAInstallPrompt() {
 
   return (
     <div className={s.banner}>
-      <img src="/applogo.png" alt="ZKDeck" className={s.icon} />
+      <img src="/HomeIcon.png" alt="ZKDeck" className={s.icon} />
       <div className={s.text}>
         <span className={s.title}>ZKDeck 앱 설치</span>
         <span className={s.desc}>홈 화면에 추가하고 빠르게 접근하세요</span>
