@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import type { UnifiedPaper } from "@/types/paper";
+import DifficultyBadge from "@/components/ui/difficulty-badge";
 
 import s from "./styles.module.scss";
 
@@ -26,7 +27,10 @@ export default function PaperTimelineItem({ paper, cardNewsId }: PaperTimelineIt
         <div className={s.line} />
       </div>
       <div className={s.content}>
-        <span className={[s.badge, TYPE_CLASS[paper.type]].join(" ")}>{paper.type} 논문</span>
+        <div className={s.badgeRow}>
+          <span className={[s.badge, TYPE_CLASS[paper.type]].join(" ")}>{paper.type} 논문</span>
+          {paper.difficulty && <DifficultyBadge level={paper.difficulty} />}
+        </div>
         <h3 className={s.title}>{paper.title}</h3>
         <p className={s.meta}>{paper.authors} · {paper.journal} · {paper.year}</p>
         <button className={s.readBtn} onClick={() => navigate(`/card-news/${cardNewsId}/papers/${paper.id}`)}>

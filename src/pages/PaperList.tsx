@@ -27,6 +27,7 @@ export default function PaperList() {
             id: p.order,
             order: p.order,
             type: p.type as UnifiedPaper["type"],
+            difficulty: (p as { difficulty?: UnifiedPaper["difficulty"] }).difficulty,
             title: p.title,
             authors: p.authors,
             journal: p.journal,

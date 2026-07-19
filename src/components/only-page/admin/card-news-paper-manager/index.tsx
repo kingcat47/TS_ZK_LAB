@@ -8,7 +8,9 @@ import {
   deletePaperFromCardNews,
 } from "@/api/firestore";
 import type { CardNewsSummary, StoredPaper } from "@/api/firestore";
-import { PAPER_TYPES } from "@/types/admin";
+import { PAPER_TYPES, DIFFICULTY_LEVELS } from "@/types/admin";
+import type { DifficultyLevel } from "@/types/admin";
+import Tooltip from "@/components/ui/tooltip";
 import ContentEditor from "@/components/only-page/admin/content-editor";
 
 import s from "./styles.module.scss";
@@ -20,6 +22,7 @@ type SummarySection = { heading: string; content: object | null };
 type PaperFormData = {
   order: number;
   type: string;
+  difficulty?: DifficultyLevel;
   title: string;
   authors: string;
   journal: string;
@@ -31,6 +34,7 @@ type PaperFormData = {
 const EMPTY_FORM: PaperFormData = {
   order: 1,
   type: "근본",
+  difficulty: "초급",
   title: "",
   authors: "",
   journal: "",
@@ -41,6 +45,12 @@ const EMPTY_FORM: PaperFormData = {
     { heading: "본론", content: null },
     { heading: "결론", content: null },
   ],
+};
+
+const DIFFICULTY_TOOLTIP: Record<DifficultyLevel, string> = {
+  초급: "누구나",
+  중급: "개념을 좀 아는 사람",
+  고급: "전공자 대상",
 };
 
 function toEditorContent(content: string | object | undefined | null): object | null {
@@ -93,6 +103,7 @@ export default function CardNewsPaperManager() {
     setForm({
       order: paper.order,
       type: paper.type,
+      difficulty: (paper as { difficulty?: DifficultyLevel }).difficulty,
       title: paper.title,
       authors: paper.authors,
       journal: paper.journal,
@@ -118,6 +129,7 @@ export default function CardNewsPaperManager() {
       const paperData = {
         order: form.order,
         type: form.type,
+        ...(form.difficulty ? { difficulty: form.difficulty } : {}),
         title: form.title,
         authors: form.authors,
         journal: form.journal,
@@ -234,6 +246,11 @@ export default function CardNewsPaperManager() {
               <div className={s.paperTextInfo}>
                 <div className={s.paperTitleRow}>
                   <span className={s.typeBadge}>{paper.type}</span>
+                  {(paper as { difficulty?: DifficultyLevel }).difficulty && (
+                    <span className={[s.typeBadge, s[`diff${(paper as { difficulty?: DifficultyLevel }).difficulty}`]].join(" ")}>
+                      {(paper as { difficulty?: DifficultyLevel }).difficulty}
+                    </span>
+                  )}
                   <span className={s.paperTitle}>{paper.title}</span>
                 </div>
                 <span className={s.paperMeta}>
@@ -370,16 +387,33 @@ function PaperForm({ form, onUpdate, editingPaperId, selectedCn, saving, onCance
             </div>
           </div>
 
-          <div className={s.field}>
-            <label className={s.label}>논문 유형</label>
-            <div className={s.typeGroup}>
-              {PAPER_TYPES.map((type) => (
-                <button key={type} type="button"
-                  className={[s.typeBtn, form.type === type ? s.selected : ""].join(" ")}
-                  onClick={() => onUpdate("type", type)}>
-                  {type}
-                </button>
-              ))}
+          <div className={s.twoCol}>
+            <div className={s.field}>
+              <label className={s.label}>논문 유형</label>
+              <div className={s.typeGroup}>
+                {PAPER_TYPES.map((type) => (
+                  <button key={type} type="button"
+                    className={[s.typeBtn, form.type === type ? s.selected : ""].join(" ")}
+                    onClick={() => onUpdate("type", type)}>
+                    {type}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className={s.field}>
+              <label className={s.label}>난이도</label>
+              <div className={s.typeGroup}>
+                {DIFFICULTY_LEVELS.map((level) => (
+                  <Tooltip key={level} content={DIFFICULTY_TOOLTIP[level]}>
+                    <button type="button"
+                      className={[s.typeBtn, form.difficulty === level ? s.selected : ""].join(" ")}
+                      onClick={() => onUpdate("difficulty", level)}>
+                      {level}
+                    </button>
+                  </Tooltip>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -33,6 +33,8 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  if (pathname === "/admin") return null;
+
   return (
     <>
       <header className={s.header}>

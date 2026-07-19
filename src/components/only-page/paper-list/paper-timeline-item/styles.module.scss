@@ -45,6 +45,13 @@
   flex: 1;
 }
 
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+  flex-wrap: wrap;
+}
+
 .badge {
   font-size: 12px;
   font-weight: 600;

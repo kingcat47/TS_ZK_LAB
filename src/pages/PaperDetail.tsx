@@ -3,8 +3,10 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { MainLayout } from "@/components/layout";
 import PaperSummary from "@/components/only-page/paper-detail/paper-summary";
+import DifficultyBadge from "@/components/ui/difficulty-badge";
 import { getCardNewsDetail } from "@/api/firestore";
 import type { UnifiedPaper } from "@/types/paper";
+import type { DifficultyLevel } from "@/components/ui/difficulty-badge";
 
 import s from "./styles/paperDetail.module.scss";
 
@@ -32,6 +34,7 @@ export default function PaperDetail() {
             id: p.order,
             order: p.order,
             type: p.type as UnifiedPaper["type"],
+            difficulty: (p as { difficulty?: DifficultyLevel }).difficulty,
             title: p.title,
             authors: p.authors,
             journal: p.journal,
@@ -56,10 +59,13 @@ export default function PaperDetail() {
   return (
     <MainLayout gap={40}>
       <div className={s.header}>
-        <button className={s.backBtn} onClick={() => navigate(-1)}>
+        <button className={s.backBtn} onClick={() => navigate(`/card-news/${id}/papers`)}>
           ← 목록으로
         </button>
-        <span className={[s.badge, TYPE_CLASS[paper.type]].join(" ")}>{paper.type} 논문</span>
+        <div className={s.badgeRow}>
+          <span className={[s.badge, TYPE_CLASS[paper.type]].join(" ")}>{paper.type} 논문</span>
+          {paper.difficulty && <DifficultyBadge level={paper.difficulty} />}
+        </div>
         <h1 className={s.title}>{paper.title}</h1>
         <p className={s.meta}>{paper.authors} · {paper.journal} · {paper.year}</p>
       </div>

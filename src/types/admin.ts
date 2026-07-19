@@ -11,6 +11,9 @@ export type Category = (typeof CATEGORIES)[number];
 export const PAPER_TYPES = ["근본", "발전", "트렌드", "한계"] as const;
 export type PaperType = (typeof PAPER_TYPES)[number];
 
+export const DIFFICULTY_LEVELS = ["초급", "중급", "고급"] as const;
+export type DifficultyLevel = (typeof DIFFICULTY_LEVELS)[number];
+
 export interface TermInput {
   word: string;
   description: string;
@@ -25,6 +28,7 @@ export interface PaperInput {
   docId?: string; // papers 컬렉션 ID (PaperSelector로 연결 시)
   order: number;
   type: PaperType;
+  difficulty?: DifficultyLevel;
   title: string;
   authors: string;
   journal: string;
