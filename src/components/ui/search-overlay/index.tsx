@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
 import { MOCK_PAPERS } from "@/mocks/papers";
@@ -100,9 +100,6 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button className={s.closeBtn} onClick={onClose}>
-            <X size={18} />
-          </button>
         </div>
 
         {q && (
