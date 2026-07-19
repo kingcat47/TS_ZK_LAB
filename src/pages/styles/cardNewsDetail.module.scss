@@ -5,4 +5,8 @@
   line-height: 1.4;
   width: 100%;
   padding-top: $spacing-40;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 }

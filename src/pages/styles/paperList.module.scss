@@ -25,6 +25,10 @@
   font-weight: 700;
   color: $color-text;
   line-height: 1.4;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 }
 
 .subtitle {
