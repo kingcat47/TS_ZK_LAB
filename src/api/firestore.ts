@@ -1,5 +1,5 @@
 import {
-  collection, addDoc, updateDoc, deleteDoc,
+  collection, addDoc, updateDoc, deleteDoc, setDoc,
   doc, getDocs, getDoc, query, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
@@ -127,6 +127,22 @@ export async function saveCardNews(form: CardNewsFormData) {
 
 export async function updateCardNewsPublished(id: string, published: boolean) {
   await updateDoc(doc(db, "cardNews", id), { published });
+}
+
+export interface BookmarksData {
+  cardNews: (string | number)[];
+  papers: (string | number)[];
+}
+
+export async function getBookmarks(uid: string): Promise<BookmarksData> {
+  const snap = await getDoc(doc(db, "users", uid, "data", "bookmarks"));
+  if (!snap.exists()) return { cardNews: [], papers: [] };
+  const d = snap.data();
+  return { cardNews: d.cardNews ?? [], papers: d.papers ?? [] };
+}
+
+export async function saveBookmarks(uid: string, bookmarks: BookmarksData): Promise<void> {
+  await setDoc(doc(db, "users", uid, "data", "bookmarks"), bookmarks);
 }
 
 export async function getCardNewsForEdit(id: string) {

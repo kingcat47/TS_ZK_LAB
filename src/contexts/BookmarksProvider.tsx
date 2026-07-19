@@ -1,25 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
+
+import { useAuth } from "./AuthContext";
+import { getBookmarks, saveBookmarks } from "@/api/firestore";
 import { BookmarksContext } from "./BookmarksContext";
 import type { BookmarksState } from "./BookmarksContext";
 
-const STORAGE_KEY = "ts_zk_lab_bookmarks";
-
-function loadFromStorage(): BookmarksState {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : { cardNews: [], papers: [] };
-  } catch {
-    return { cardNews: [], papers: [] };
-  }
-}
+const EMPTY: BookmarksState = { cardNews: [], papers: [] };
 
 export function BookmarksProvider({ children }: { children: ReactNode }) {
-  const [bookmarks, setBookmarks] = useState<BookmarksState>(loadFromStorage);
+  const { user, loading } = useAuth();
+  const [bookmarks, setBookmarks] = useState<BookmarksState>(EMPTY);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      setBookmarks(EMPTY);
+      return;
+    }
+    getBookmarks(user.uid).then((data) =>
+      setBookmarks({
+        cardNews: data.cardNews.map(Number),
+        papers: data.papers.map(Number),
+      })
+    );
+  }, [user, loading]);
 
   function save(next: BookmarksState) {
     setBookmarks(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    if (user) saveBookmarks(user.uid, next);
   }
 
   function toggleCardNews(id: number) {

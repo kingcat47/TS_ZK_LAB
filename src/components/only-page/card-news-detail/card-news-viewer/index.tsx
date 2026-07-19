@@ -15,8 +15,15 @@ export default function CardNewsViewer({ slides, title }: CardNewsViewerProps) {
 
   return (
     <div className={s.viewer}>
-      <div className={s.imageWrapper}>
-        <img src={slides[current]} alt={`${title} ${current + 1}번째 카드`} />
+      <div className={s.track}>
+        <div
+          className={s.strip}
+          style={{ transform: `translateX(-${current * 100}%)` }}
+        >
+          {slides.map((src, i) => (
+            <img key={i} src={src} alt={`${title} ${i + 1}번째 카드`} className={s.slide} />
+          ))}
+        </div>
         {slides.length > 1 && (
           <>
             <button className={s.arrowLeft} onClick={prev} disabled={current === 0}>&#8592;</button>
@@ -24,6 +31,7 @@ export default function CardNewsViewer({ slides, title }: CardNewsViewerProps) {
           </>
         )}
       </div>
+
       {slides.length > 1 && (
         <div className={s.indicators}>
           {slides.map((_, i) => (
