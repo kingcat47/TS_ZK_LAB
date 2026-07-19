@@ -65,6 +65,14 @@
   }
 }
 
+.privacy {
+  max-width: $max-width;
+  margin: 0 auto $spacing-8;
+  font-size: 11px;
+  color: $color-text-subtle;
+  
+}
+
 .copyright {
   max-width: $max-width;
   margin: 0 auto;

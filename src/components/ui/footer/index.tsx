@@ -24,6 +24,9 @@ export default function Footer() {
           </a>
         </div>
       </div>
+      <p className={s.privacy}>
+        본 서비스는 북마크 기능 제공을 위해 Google 로그인을 사용하며, 수집된 정보는 해당 목적 외에 사용되지 않습니다.
+      </p>
       <p className={s.copyright}>© 2025 ZKDeck. All rights reserved.</p>
     </footer>
   );
