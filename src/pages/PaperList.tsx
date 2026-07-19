@@ -3,8 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { MainLayout } from "@/components/layout";
 import PaperTimelineItem from "@/components/only-page/paper-list/paper-timeline-item";
-import { MOCK_PAPERS } from "@/mocks/papers";
-import { MOCK_CARD_NEWS_DETAIL } from "@/mocks/cardNewsDetail";
 import { getCardNewsDetail } from "@/api/firestore";
 import type { UnifiedPaper } from "@/types/paper";
 
@@ -14,19 +12,12 @@ export default function PaperList() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const mockCardNews = MOCK_CARD_NEWS_DETAIL.find((item) => item.id === Number(id));
-  const isMock = !!mockCardNews;
-
-  const [title, setTitle] = useState(mockCardNews?.title ?? "");
-  const [papers, setPapers] = useState<UnifiedPaper[]>(() =>
-    isMock
-      ? MOCK_PAPERS.filter((p) => p.cardNewsId === Number(id)).sort((a, b) => a.order - b.order)
-      : []
-  );
-  const [loading, setLoading] = useState(!isMock);
+  const [title, setTitle] = useState("");
+  const [papers, setPapers] = useState<UnifiedPaper[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isMock || !id) return;
+    if (!id) return;
     getCardNewsDetail(id).then((data) => {
       if (!data) return;
       setTitle(data.title);
@@ -49,7 +40,7 @@ export default function PaperList() {
   }, [id]);
 
   if (loading) return <MainLayout><p>불러오는 중...</p></MainLayout>;
-  if (!isMock && !title) return <MainLayout><p>카드뉴스를 찾을 수 없습니다.</p></MainLayout>;
+  if (!title) return <MainLayout><p>카드뉴스를 찾을 수 없습니다.</p></MainLayout>;
 
   return (
     <MainLayout gap={40}>

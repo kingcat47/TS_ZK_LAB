@@ -6,8 +6,6 @@ import { CardNews, Button } from "@/components/ui";
 import PaperCollectionCard from "@/components/only-page/papers/paper-collection-card";
 import { useAuth } from "@/contexts/auth/AuthContext";
 import { useBookmarks } from "@/contexts/bookmarks/BookmarksContext";
-import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
-import { MOCK_PAPERS } from "@/mocks/papers";
 import { getPublishedCardNews, getPublishedCardNewsWithPapers } from "@/api/firestore";
 import type { CardNewsProps } from "@/components/ui/card-news";
 import type { CardNewsWithPapers } from "@/api/firestore";
@@ -52,27 +50,16 @@ export default function Bookmarks() {
     );
   }
 
-  const allCardNews: CardNewsProps[] = [...firestoreCardNews, ...MOCK_CARD_NEWS];
-
-  const bookmarkedCardNews = allCardNews.filter((item) =>
+  const bookmarkedCardNews = firestoreCardNews.filter((item) =>
     bookmarks.cardNews.includes(String(item.id))
   );
 
-  const firestoreBookmarkedPapers = firestorePaperCards
+  const bookmarkedPapers = firestorePaperCards
     .filter((item) => bookmarks.papers.includes(item.id))
     .map((item) => ({
       cardNews: { id: item.id, thumbnail: item.thumbnail, title: item.title, category: item.category },
       papers: item.papers,
     }));
-
-  const mockBookmarkedPapers = MOCK_CARD_NEWS.filter((item) =>
-    bookmarks.papers.includes(String(item.id))
-  ).map((cardNews) => ({
-    cardNews,
-    papers: MOCK_PAPERS.filter((p) => p.cardNewsId === Number(cardNews.id)).sort((a, b) => a.order - b.order),
-  })).filter(({ papers }) => papers.length > 0);
-
-  const bookmarkedPapers = [...firestoreBookmarkedPapers, ...mockBookmarkedPapers];
 
   const showCardNews = filter === "전체" || filter === "카드뉴스";
   const showPapers = filter === "전체" || filter === "논문";

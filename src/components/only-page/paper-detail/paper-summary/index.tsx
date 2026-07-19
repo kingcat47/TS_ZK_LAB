@@ -1,4 +1,4 @@
-import type { PaperSummarySection } from "@/mocks/papers";
+import type { PaperSummarySection } from "@/types/paper";
 
 import s from "./styles.module.scss";
 

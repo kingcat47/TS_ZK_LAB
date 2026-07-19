@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 
 import { MainLayout } from "@/components/layout";
 import PaperCollectionCard from "@/components/only-page/papers/paper-collection-card";
-import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
-import { MOCK_PAPERS } from "@/mocks/papers";
 import { getPublishedCardNewsWithPapers } from "@/api/firestore";
 import type { CardNewsProps } from "@/components/ui/card-news";
 
@@ -14,17 +12,12 @@ interface Collection {
   papers: { id?: string | number; type: string }[];
 }
 
-const MOCK_COLLECTIONS: Collection[] = MOCK_CARD_NEWS.map((cardNews) => ({
-  cardNews,
-  papers: MOCK_PAPERS.filter((p) => p.cardNewsId === cardNews.id).sort((a, b) => a.order - b.order),
-})).filter(({ papers }) => papers.length > 0);
-
 export default function Papers() {
-  const [collections, setCollections] = useState<Collection[]>(MOCK_COLLECTIONS);
+  const [collections, setCollections] = useState<Collection[]>([]);
 
   useEffect(() => {
     getPublishedCardNewsWithPapers().then((real) => {
-      const realCollections: Collection[] = real.map((r) => ({
+      setCollections(real.map((r) => ({
         cardNews: {
           id: r.id,
           thumbnail: r.thumbnail,
@@ -32,8 +25,7 @@ export default function Papers() {
           category: r.category,
         },
         papers: r.papers,
-      }));
-      setCollections([...realCollections, ...MOCK_COLLECTIONS]);
+      })));
     });
   }, []);
 

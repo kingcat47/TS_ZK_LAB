@@ -1,3 +1,8 @@
+export interface PaperSummarySection {
+  heading: string;
+  content: string;
+}
+
 export interface UnifiedPaper {
   id: string | number;
   order: number;

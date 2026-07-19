@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 
 import { MainLayout } from "@/components/layout";
 import PaperSummary from "@/components/only-page/paper-detail/paper-summary";
-import { MOCK_PAPERS } from "@/mocks/papers";
 import { getCardNewsDetail } from "@/api/firestore";
 import type { UnifiedPaper } from "@/types/paper";
 
@@ -20,17 +19,11 @@ export default function PaperDetail() {
   const { id, paperId } = useParams<{ id: string; paperId: string }>();
   const navigate = useNavigate();
 
-  const isMock = MOCK_PAPERS.some((p) => p.cardNewsId === Number(id));
-
-  const [papers, setPapers] = useState<UnifiedPaper[]>(() =>
-    isMock
-      ? MOCK_PAPERS.filter((p) => p.cardNewsId === Number(id)).sort((a, b) => a.order - b.order)
-      : []
-  );
-  const [loading, setLoading] = useState(!isMock);
+  const [papers, setPapers] = useState<UnifiedPaper[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isMock || !id) return;
+    if (!id) return;
     getCardNewsDetail(id).then((data) => {
       if (!data) return;
       setPapers(

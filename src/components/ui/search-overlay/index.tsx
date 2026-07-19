@@ -2,16 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
 
-import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
-import { MOCK_PAPERS } from "@/mocks/papers";
 import { getPublishedCardNews, getPublishedPapersForSearch } from "@/api/firestore";
 import type { CardNewsProps } from "@/components/ui/card-news";
-import type { Paper } from "@/mocks/papers";
 import type { PaperSearchItem } from "@/api/firestore";
 
 import s from "./styles.module.scss";
 
-const TYPE_CLASS: Record<Paper["type"], string> = {
+const TYPE_CLASS: Record<PaperSearchItem["type"], string> = {
   근본: s.typeRoot,
   발전: s.typeAdvanced,
   트렌드: s.typeTrend,
@@ -52,21 +49,18 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
     );
   }, []);
 
-  const allCardNews = [...firestoreCardNews, ...MOCK_CARD_NEWS];
   const q = query.trim().toLowerCase();
 
   const cardNewsResults = q
-    ? allCardNews.filter(
+    ? firestoreCardNews.filter(
         (item) =>
           item.title.toLowerCase().includes(q) ||
           item.category?.toLowerCase().includes(q)
       )
     : [];
 
-  const allPapers: (Paper | PaperSearchItem)[] = [...firestorePapers, ...MOCK_PAPERS];
-
   const paperResults = q
-    ? allPapers.filter(
+    ? firestorePapers.filter(
         (paper) =>
           paper.title.toLowerCase().includes(q) ||
           paper.authors.toLowerCase().includes(q) ||
@@ -81,11 +75,8 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
     onClose();
   }
 
-  function getPaperPath(paper: Paper | PaperSearchItem) {
-    if (typeof paper.cardNewsId === "string") {
-      return `/card-news/${paper.cardNewsId}/papers/${(paper as PaperSearchItem).order}`;
-    }
-    return `/card-news/${paper.cardNewsId}/papers/${paper.id}`;
+  function getPaperPath(paper: PaperSearchItem) {
+    return `/card-news/${paper.cardNewsId}/papers/${paper.order}`;
   }
 
   return (
