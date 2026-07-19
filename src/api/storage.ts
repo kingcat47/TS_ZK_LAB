@@ -1,13 +1,17 @@
+import { auth } from "./firebase";
+
 const WORKER_URL = import.meta.env.VITE_UPLOAD_WORKER_URL as string;
-const ADMIN_TOKEN = import.meta.env.VITE_ADMIN_TOKEN as string;
 
 export async function uploadImage(file: File, path: string): Promise<string> {
+  const idToken = await auth.currentUser?.getIdToken();
+  if (!idToken) throw new Error("Not authenticated");
+
   const encodedPath = path.split("/").map(encodeURIComponent).join("/");
   const res = await fetch(`${WORKER_URL}/${encodedPath}`, {
     method: "PUT",
     headers: {
       "Content-Type": file.type,
-      "X-Admin-Token": ADMIN_TOKEN,
+      "Authorization": `Bearer ${idToken}`,
     },
     body: file,
   });
