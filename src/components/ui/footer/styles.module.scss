@@ -1,0 +1,73 @@
+.footer {
+  width: 100%;
+  border-top: 1px solid $color-border;
+  background-color: $color-surface;
+  padding: $spacing-48 $padding $spacing-32;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: $spacing-32 $padding-mobile $spacing-24;
+  }
+}
+
+.inner {
+  max-width: $max-width;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-32;
+  margin-bottom: $spacing-32;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: $spacing-24;
+    margin-bottom: $spacing-24;
+  }
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-text-brand;
+}
+
+.tagline {
+  font-size: 13px;
+  color: $color-text-subtle;
+  line-height: 1.7;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-12;
+  flex-shrink: 0;
+}
+
+.instagram {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+  font-size: 14px;
+  color: $color-text-subtle;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $color-text;
+  }
+}
+
+.copyright {
+  max-width: $max-width;
+  margin: 0 auto;
+  font-size: 12px;
+  color: $color-text-subtle;
+}

@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 import Header from "@/components/ui/header";
+import Footer from "@/components/ui/footer";
 import PWAInstallPrompt from "@/components/ui/pwa-install-prompt";
 
 export default function RootLayout() {
@@ -8,6 +9,7 @@ export default function RootLayout() {
     <>
       <Header />
       <Outlet />
+      <Footer />
       <PWAInstallPrompt />
     </>
   );
