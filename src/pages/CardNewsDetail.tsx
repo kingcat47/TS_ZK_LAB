@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { MainLayout } from "@/components/layout";
 import CardNewsViewer from "@/components/only-page/card-news-detail/card-news-viewer";
 import TermSection from "@/components/only-page/card-news-detail/term-section";
-import ExplainSection from "@/components/only-page/card-news-detail/explain-section";
 import TiptapViewer from "@/components/only-page/card-news-detail/tiptap-viewer";
 import ReferenceSection from "@/components/only-page/card-news-detail/reference-section";
 import { getCardNewsDetail } from "@/api/firestore";
