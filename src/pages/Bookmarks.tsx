@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { MainLayout } from "@/components/layout";
@@ -8,6 +8,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
 import { MOCK_PAPERS } from "@/mocks/papers";
+import { getPublishedCardNews, getPublishedCardNewsWithPapers } from "@/api/firestore";
+import type { CardNewsProps } from "@/components/ui/card-news";
+import type { CardNewsWithPapers } from "@/api/firestore";
 
 import s from "./styles/bookmarks.module.scss";
 
@@ -19,6 +22,23 @@ export default function Bookmarks() {
   const { user } = useAuth();
   const { bookmarks } = useBookmarks();
   const [filter, setFilter] = useState<FilterType>("전체");
+  const [firestoreCardNews, setFirestoreCardNews] = useState<CardNewsProps[]>([]);
+  const [firestorePaperCards, setFirestorePaperCards] = useState<CardNewsWithPapers[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    getPublishedCardNews().then((items) =>
+      setFirestoreCardNews(
+        items.map((r) => ({
+          id: r.id,
+          thumbnail: r.thumbnail,
+          title: r.title,
+          category: r.category,
+        }))
+      )
+    );
+    getPublishedCardNewsWithPapers().then(setFirestorePaperCards);
+  }, [user]);
 
   if (!user) {
     return (
@@ -32,16 +52,27 @@ export default function Bookmarks() {
     );
   }
 
-  const bookmarkedCardNews = MOCK_CARD_NEWS.filter((item) =>
+  const allCardNews: CardNewsProps[] = [...firestoreCardNews, ...MOCK_CARD_NEWS];
+
+  const bookmarkedCardNews = allCardNews.filter((item) =>
     bookmarks.cardNews.includes(String(item.id))
   );
 
-  const bookmarkedPapers = MOCK_CARD_NEWS.filter((item) =>
+  const firestoreBookmarkedPapers = firestorePaperCards
+    .filter((item) => bookmarks.papers.includes(item.id))
+    .map((item) => ({
+      cardNews: { id: item.id, thumbnail: item.thumbnail, title: item.title, category: item.category },
+      papers: item.papers,
+    }));
+
+  const mockBookmarkedPapers = MOCK_CARD_NEWS.filter((item) =>
     bookmarks.papers.includes(String(item.id))
   ).map((cardNews) => ({
     cardNews,
     papers: MOCK_PAPERS.filter((p) => p.cardNewsId === Number(cardNews.id)).sort((a, b) => a.order - b.order),
   })).filter(({ papers }) => papers.length > 0);
+
+  const bookmarkedPapers = [...firestoreBookmarkedPapers, ...mockBookmarkedPapers];
 
   const showCardNews = filter === "전체" || filter === "카드뉴스";
   const showPapers = filter === "전체" || filter === "논문";
