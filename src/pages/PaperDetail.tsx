@@ -77,6 +77,10 @@ export default function PaperDetail() {
 
       <div className={s.divider} />
 
+      <p className={s.disclaimer}>
+        ※ 이 내용은 편집팀이 임의로 요약한 버전입니다. 정확한 내용은 반드시 원문을 직접 확인해 주세요.
+      </p>
+
       <div className={s.nav}>
         {prevPaper ? (
           <button className={s.navBtn} onClick={() => navigate(`/card-news/${id}/papers/${prevPaper.id}`)}>

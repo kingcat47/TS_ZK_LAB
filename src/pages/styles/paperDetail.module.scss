@@ -51,6 +51,12 @@
   background-color: $color-border;
 }
 
+.disclaimer {
+  font-size: 13px;
+  color: $color-text-subtle;
+  line-height: 1.6;
+}
+
 .nav {
   width: 100%;
   display: flex;
