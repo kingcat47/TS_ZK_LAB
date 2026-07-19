@@ -20,8 +20,8 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     }
     getBookmarks(user.uid).then((data) =>
       setBookmarks({
-        cardNews: data.cardNews.map(Number),
-        papers: data.papers.map(Number),
+        cardNews: data.cardNews.map(String),
+        papers: data.papers.map(String),
       })
     );
   }, [user, loading]);
@@ -31,7 +31,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     if (user) saveBookmarks(user.uid, next);
   }
 
-  function toggleCardNews(id: number) {
+  function toggleCardNews(id: string) {
     save({
       ...bookmarks,
       cardNews: bookmarks.cardNews.includes(id)
@@ -40,7 +40,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  function togglePaper(cardNewsId: number) {
+  function togglePaper(cardNewsId: string) {
     save({
       ...bookmarks,
       papers: bookmarks.papers.includes(cardNewsId)
@@ -55,8 +55,8 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
         bookmarks,
         toggleCardNews,
         togglePaper,
-        isCardNewsBookmarked: (id) => bookmarks.cardNews.includes(id),
-        isPaperBookmarked: (cardNewsId) => bookmarks.papers.includes(cardNewsId),
+        isCardNewsBookmarked: (id) => bookmarks.cardNews.includes(String(id)),
+        isPaperBookmarked: (cardNewsId) => bookmarks.papers.includes(String(cardNewsId)),
       }}
     >
       {children}

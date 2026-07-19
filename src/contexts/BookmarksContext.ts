@@ -1,16 +1,16 @@
 import { createContext, useContext } from "react";
 
 export interface BookmarksState {
-  cardNews: number[];
-  papers: number[];
+  cardNews: string[];
+  papers: string[];
 }
 
 export interface BookmarksContextType {
   bookmarks: BookmarksState;
-  toggleCardNews: (id: number) => void;
-  togglePaper: (cardNewsId: number) => void;
-  isCardNewsBookmarked: (id: number) => boolean;
-  isPaperBookmarked: (cardNewsId: number) => boolean;
+  toggleCardNews: (id: string) => void;
+  togglePaper: (cardNewsId: string) => void;
+  isCardNewsBookmarked: (id: string) => boolean;
+  isPaperBookmarked: (cardNewsId: string) => boolean;
 }
 
 export const BookmarksContext = createContext<BookmarksContextType>({

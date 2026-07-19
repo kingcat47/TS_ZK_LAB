@@ -21,7 +21,7 @@ interface PaperCollectionCardProps {
 export default function PaperCollectionCard({ cardNews, papers }: PaperCollectionCardProps) {
   const navigate = useNavigate();
   const { isPaperBookmarked, togglePaper } = useBookmarks();
-  const bookmarked = isPaperBookmarked(Number(cardNews.id));
+  const bookmarked = isPaperBookmarked(String(cardNews.id));
 
   return (
     <article className={s.card} onClick={() => navigate(`/card-news/${cardNews.id}/papers`)}>
@@ -29,7 +29,7 @@ export default function PaperCollectionCard({ cardNews, papers }: PaperCollectio
         <img src={cardNews.thumbnail} alt={cardNews.title} />
         <button
           className={[s.bookmarkBtn, bookmarked ? s.bookmarked : ""].join(" ")}
-          onClick={(e) => { e.stopPropagation(); togglePaper(Number(cardNews.id)); }}
+          onClick={(e) => { e.stopPropagation(); togglePaper(String(cardNews.id)); }}
           title={bookmarked ? "찜 해제" : "찜하기"}
         >
           <Bookmark size={16} fill={bookmarked ? "currentColor" : "none"} />

@@ -33,11 +33,11 @@ export default function Bookmarks() {
   }
 
   const bookmarkedCardNews = MOCK_CARD_NEWS.filter((item) =>
-    bookmarks.cardNews.includes(Number(item.id))
+    bookmarks.cardNews.includes(String(item.id))
   );
 
   const bookmarkedPapers = MOCK_CARD_NEWS.filter((item) =>
-    bookmarks.papers.includes(Number(item.id))
+    bookmarks.papers.includes(String(item.id))
   ).map((cardNews) => ({
     cardNews,
     papers: MOCK_PAPERS.filter((p) => p.cardNewsId === Number(cardNews.id)).sort((a, b) => a.order - b.order),

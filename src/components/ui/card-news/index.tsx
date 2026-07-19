@@ -17,7 +17,7 @@ export interface CardNewsProps {
 export default function CardNews({ id, thumbnail, title, description, category, date }: CardNewsProps) {
   const navigate = useNavigate();
   const { isCardNewsBookmarked, toggleCardNews } = useBookmarks();
-  const bookmarked = isCardNewsBookmarked(Number(id));
+  const bookmarked = isCardNewsBookmarked(String(id));
 
   return (
     <article className={s.card} onClick={() => navigate(`/card-news/${id}`)}>
@@ -25,7 +25,7 @@ export default function CardNews({ id, thumbnail, title, description, category, 
         <img src={thumbnail} alt={title} />
         <button
           className={[s.bookmarkBtn, bookmarked ? s.bookmarked : ""].join(" ")}
-          onClick={(e) => { e.stopPropagation(); toggleCardNews(Number(id)); }}
+          onClick={(e) => { e.stopPropagation(); toggleCardNews(String(id)); }}
           title={bookmarked ? "찜 해제" : "찜하기"}
         >
           <Bookmark size={16} fill={bookmarked ? "currentColor" : "none"} />
