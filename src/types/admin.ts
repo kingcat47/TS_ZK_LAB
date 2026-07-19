@@ -53,5 +53,9 @@ export const EMPTY_PAPER: PaperInput = {
   journal: "",
   year: new Date().getFullYear(),
   url: "",
-  summary: [{ heading: "", content: "" }],
+  summary: [
+    { heading: "서론", content: "" },
+    { heading: "본론", content: "" },
+    { heading: "결론", content: "" },
+  ],
 };

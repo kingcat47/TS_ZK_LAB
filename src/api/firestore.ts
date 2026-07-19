@@ -1,6 +1,6 @@
 import {
   collection, addDoc, updateDoc, deleteDoc,
-  doc, getDocs, query, orderBy, serverTimestamp,
+  doc, getDocs, getDoc, query, orderBy, serverTimestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { uploadImage } from "./storage";
@@ -11,6 +11,14 @@ export interface CardNewsSummary {
   title: string;
   category: string;
   published: boolean;
+  thumbnail: string;
+  createdAt: number;
+}
+
+export interface CardNewsItem {
+  id: string;
+  title: string;
+  category: string;
   thumbnail: string;
   createdAt: number;
 }
@@ -26,6 +34,52 @@ export async function getCardNewsList(): Promise<CardNewsSummary[]> {
     thumbnail: d.data().thumbnail,
     createdAt: d.data().createdAt?.toMillis?.() ?? 0,
   }));
+}
+
+export interface CardNewsWithPapers {
+  id: string;
+  title: string;
+  category: string;
+  thumbnail: string;
+  papers: { type: string }[];
+}
+
+export async function getPublishedCardNewsWithPapers(): Promise<CardNewsWithPapers[]> {
+  const q = query(collection(db, "cardNews"), orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  const published = snap.docs.filter((d) => d.data().published);
+
+  const results = await Promise.all(
+    published.map(async (d) => {
+      const papersSnap = await getDocs(collection(db, "cardNews", d.id, "papers"));
+      return {
+        id: d.id,
+        title: d.data().title,
+        category: d.data().category,
+        thumbnail: d.data().thumbnail,
+        papers: papersSnap.docs.map((p) => ({ type: p.data().type as string })),
+      };
+    })
+  );
+
+  return results.filter((r) => r.papers.length > 0);
+}
+
+export async function getPublishedCardNews(): Promise<CardNewsItem[]> {
+  const q = query(
+    collection(db, "cardNews"),
+    orderBy("createdAt", "desc")
+  );
+  const snap = await getDocs(q);
+  return snap.docs
+    .filter((d) => d.data().published)
+    .map((d) => ({
+      id: d.id,
+      title: d.data().title,
+      category: d.data().category,
+      thumbnail: d.data().thumbnail,
+      createdAt: d.data().createdAt?.toMillis?.() ?? 0,
+    }));
 }
 
 export async function deleteCardNews(id: string) {
@@ -71,4 +125,44 @@ export async function saveCardNews(form: CardNewsFormData) {
 
 export async function updateCardNewsPublished(id: string, published: boolean) {
   await updateDoc(doc(db, "cardNews", id), { published });
+}
+
+export interface CardNewsDetail {
+  id: string;
+  title: string;
+  category: string;
+  slides: string[];
+  terms: { word: string; description: string }[];
+  content: object;
+  papers: {
+    id: string;
+    order: number;
+    type: string;
+    title: string;
+    authors: string;
+    journal: string;
+    year: number;
+    url: string;
+    summary: { heading: string; content: string }[];
+  }[];
+}
+
+export async function getCardNewsDetail(id: string): Promise<CardNewsDetail | null> {
+  const snap = await getDoc(doc(db, "cardNews", id));
+  if (!snap.exists()) return null;
+
+  const d = snap.data();
+  const papersSnap = await getDocs(
+    query(collection(db, "cardNews", id, "papers"), orderBy("order"))
+  );
+
+  return {
+    id: snap.id,
+    title: d.title,
+    category: d.category,
+    slides: d.slides ?? [],
+    terms: d.terms ?? [],
+    content: d.content ?? {},
+    papers: papersSnap.docs.map((p) => ({ id: p.id, ...p.data() as object }) as CardNewsDetail["papers"][number]),
+  };
 }

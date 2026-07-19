@@ -130,6 +130,15 @@ export default function ContentEditor({ terms, onChange }: ContentEditorProps) {
             </div>
           )}
         </div>
+        <button
+          type="button"
+          className={s.toolBtn}
+          onClick={() => editor.chain().focus().unsetTermMark().run()}
+          title="용어 지정 해제"
+          disabled={!editor.isActive("termMark")}
+        >
+          <span className={s.toolLabel}>용어 해제</span>
+        </button>
       </div>
 
       <EditorContent editor={editor} className={s.editor} />

@@ -11,7 +11,7 @@ export interface Reference {
 }
 
 interface ReferenceSectionProps {
-  cardNewsId: number;
+  cardNewsId: string | number;
   references: Reference[];
 }
 

@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 
-import type { Paper } from "@/mocks/papers";
+import type { UnifiedPaper } from "@/types/paper";
 
 import s from "./styles.module.scss";
 
-const TYPE_CLASS: Record<Paper["type"], string> = {
+const TYPE_CLASS: Record<UnifiedPaper["type"], string> = {
   근본: s.typeRoot,
   발전: s.typeAdvanced,
   트렌드: s.typeTrend,
@@ -12,8 +12,8 @@ const TYPE_CLASS: Record<Paper["type"], string> = {
 };
 
 interface PaperTimelineItemProps {
-  paper: Paper;
-  cardNewsId: number;
+  paper: UnifiedPaper;
+  cardNewsId: string | number;
 }
 
 export default function PaperTimelineItem({ paper, cardNewsId }: PaperTimelineItemProps) {

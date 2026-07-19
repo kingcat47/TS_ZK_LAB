@@ -2,7 +2,8 @@ const WORKER_URL = import.meta.env.VITE_UPLOAD_WORKER_URL as string;
 const ADMIN_TOKEN = import.meta.env.VITE_ADMIN_TOKEN as string;
 
 export async function uploadImage(file: File, path: string): Promise<string> {
-  const res = await fetch(`${WORKER_URL}/${path}`, {
+  const encodedPath = path.split("/").map(encodeURIComponent).join("/");
+  const res = await fetch(`${WORKER_URL}/${encodedPath}`, {
     method: "PUT",
     headers: {
       "Content-Type": file.type,

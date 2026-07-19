@@ -2,12 +2,11 @@ import { useNavigate } from "react-router-dom";
 import { Bookmark } from "lucide-react";
 
 import type { CardNewsProps } from "@/components/ui/card-news";
-import type { Paper } from "@/mocks/papers";
 import { useBookmarks } from "@/contexts/BookmarksContext";
 
 import s from "./styles.module.scss";
 
-const TYPE_CLASS: Record<Paper["type"], string> = {
+const TYPE_CLASS: Record<string, string> = {
   근본: s.typeRoot,
   발전: s.typeAdvanced,
   트렌드: s.typeTrend,
@@ -16,7 +15,7 @@ const TYPE_CLASS: Record<Paper["type"], string> = {
 
 interface PaperCollectionCardProps {
   cardNews: CardNewsProps;
-  papers: Paper[];
+  papers: { id?: string | number; type: string }[];
 }
 
 export default function PaperCollectionCard({ cardNews, papers }: PaperCollectionCardProps) {
@@ -38,8 +37,8 @@ export default function PaperCollectionCard({ cardNews, papers }: PaperCollectio
       </div>
       <div className={s.content}>
         <div className={s.typeBadges}>
-          {papers.map((paper) => (
-            <span key={paper.id} className={[s.badge, TYPE_CLASS[paper.type]].join(" ")}>
+          {papers.map((paper, i) => (
+            <span key={paper.id ?? i} className={[s.badge, TYPE_CLASS[paper.type] ?? ""].join(" ")}>
               {paper.type}
             </span>
           ))}
