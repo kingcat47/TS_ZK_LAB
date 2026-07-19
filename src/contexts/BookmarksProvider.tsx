@@ -18,12 +18,14 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
       setBookmarks(EMPTY);
       return;
     }
-    getBookmarks(user.uid).then((data) =>
-      setBookmarks({
-        cardNews: data.cardNews.map(String),
-        papers: data.papers.map(String),
-      })
-    );
+    getBookmarks(user.uid).then((data) => {
+      const cleaned = {
+        cardNews: data.cardNews.map(String).filter((id) => id !== "NaN" && id !== "null" && id !== "undefined"),
+        papers: data.papers.map(String).filter((id) => id !== "NaN" && id !== "null" && id !== "undefined"),
+      };
+      setBookmarks(cleaned);
+      if (user) saveBookmarks(user.uid, cleaned);
+    });
   }, [user, loading]);
 
   function save(next: BookmarksState) {
