@@ -4,6 +4,8 @@ import { Search, X } from "lucide-react";
 
 import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
 import { MOCK_PAPERS } from "@/mocks/papers";
+import { getPublishedCardNews } from "@/api/firestore";
+import type { CardNewsProps } from "@/components/ui/card-news";
 import type { Paper } from "@/mocks/papers";
 
 import s from "./styles.module.scss";
@@ -21,6 +23,7 @@ interface SearchOverlayProps {
 
 export default function SearchOverlay({ onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState("");
+  const [firestoreCardNews, setFirestoreCardNews] = useState<CardNewsProps[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -33,14 +36,27 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  useEffect(() => {
+    getPublishedCardNews().then((items) =>
+      setFirestoreCardNews(
+        items.map((r) => ({
+          id: r.id,
+          thumbnail: r.thumbnail,
+          title: r.title,
+          category: r.category,
+        }))
+      )
+    );
+  }, []);
+
+  const allCardNews = [...firestoreCardNews, ...MOCK_CARD_NEWS];
   const q = query.trim().toLowerCase();
 
   const cardNewsResults = q
-    ? MOCK_CARD_NEWS.filter(
+    ? allCardNews.filter(
         (item) =>
           item.title.toLowerCase().includes(q) ||
-          item.category?.toLowerCase().includes(q) ||
-          item.description?.toLowerCase().includes(q)
+          item.category?.toLowerCase().includes(q)
       )
     : [];
 
@@ -95,7 +111,7 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
                     <img src={item.thumbnail} alt={item.title} className={s.resultThumb} />
                     <div className={s.resultInfo}>
                       <span className={s.resultTitle}>{item.title}</span>
-                      <span className={s.resultSub}>{item.category} · {item.date}</span>
+                      <span className={s.resultSub}>{item.category}{item.date ? ` · ${item.date}` : ""}</span>
                     </div>
                   </button>
                 ))}
