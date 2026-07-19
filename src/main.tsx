@@ -4,6 +4,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/router";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import { BookmarksProvider } from "@/contexts/BookmarksProvider";
+import { ToastProvider } from "@/contexts/ToastContext";
 import "@/styles/globals.scss";
 
 const rootElement = document.getElementById("root");
@@ -12,7 +13,9 @@ createRoot(rootElement).render(
   <StrictMode>
     <AuthProvider>
       <BookmarksProvider>
-        <RouterProvider router={router} />
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
       </BookmarksProvider>
     </AuthProvider>
   </StrictMode>,

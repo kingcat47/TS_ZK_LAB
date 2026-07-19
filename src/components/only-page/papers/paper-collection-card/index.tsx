@@ -4,6 +4,7 @@ import { Bookmark } from "lucide-react";
 import type { CardNewsProps } from "@/components/ui/card-news";
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 import s from "./styles.module.scss";
 
@@ -23,11 +24,12 @@ export default function PaperCollectionCard({ cardNews, papers }: PaperCollectio
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isPaperBookmarked, togglePaper } = useBookmarks();
+  const { showToast } = useToast();
   const bookmarked = isPaperBookmarked(String(cardNews.id));
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) { navigate("/auth/login"); return; }
+    if (!user) { showToast("로그인이 필요한 서비스입니다."); return; }
     togglePaper(String(cardNews.id));
   };
 

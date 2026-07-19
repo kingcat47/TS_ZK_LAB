@@ -3,6 +3,7 @@ import { Bookmark } from "lucide-react";
 
 import { useBookmarks } from "@/contexts/BookmarksContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 import s from "./styles.module.scss";
 
@@ -19,11 +20,12 @@ export default function CardNews({ id, thumbnail, title, description, category, 
   const navigate = useNavigate();
   const { user } = useAuth();
   const { isCardNewsBookmarked, toggleCardNews } = useBookmarks();
+  const { showToast } = useToast();
   const bookmarked = isCardNewsBookmarked(String(id));
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) { navigate("/auth/login"); return; }
+    if (!user) { showToast("로그인이 필요한 서비스입니다."); return; }
     toggleCardNews(String(id));
   };
 
