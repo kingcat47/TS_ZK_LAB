@@ -1,6 +1,6 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
+import { ResizableImage } from "@/components/only-page/admin/content-editor/ResizableImageExtension";
 import { TermMark } from "@/components/only-page/admin/content-editor/TermMark";
 
 import s from "./styles.module.scss";
@@ -11,7 +11,7 @@ interface TiptapViewerProps {
 
 export default function TiptapViewer({ content }: TiptapViewerProps) {
   const editor = useEditor({
-    extensions: [StarterKit, Image, TermMark],
+    extensions: [StarterKit, ResizableImage, TermMark],
     content,
     editable: false,
   });

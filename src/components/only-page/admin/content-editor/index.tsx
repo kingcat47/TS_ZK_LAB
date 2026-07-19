@@ -1,8 +1,8 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
-import { Bold, Italic, List, ListOrdered, ImageIcon, Tag } from "lucide-react";
+import { ResizableImage } from "./ResizableImageExtension";
+import { Bold, Italic, List, ListOrdered, ImageIcon, Tag, AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 
 import { uploadImage } from "@/api/storage";
@@ -25,7 +25,7 @@ export default function ContentEditor({ terms, initialContent, onChange }: Conte
   const editor = useEditor({
     extensions: [
       StarterKit,
-      Image.configure({ inline: false }),
+      ResizableImage,
       Placeholder.configure({ placeholder: "본문을 작성하세요..." }),
       TermMark,
     ],
@@ -114,6 +114,25 @@ export default function ContentEditor({ terms, initialContent, onChange }: Conte
           {uploading && <span className={s.uploading}>업로드 중...</span>}
         </button>
         <input ref={fileInputRef} type="file" accept="image/*" className={s.hidden} onChange={handleImageUpload} />
+
+        {editor.isActive("image") && (
+          <>
+            <div className={s.divider} />
+            {(["left", "center", "right"] as const).map((align) => (
+              <button
+                key={align}
+                type="button"
+                className={[s.toolBtn, editor.getAttributes("image").align === align ? s.active : ""].join(" ")}
+                onClick={() => editor.chain().focus().updateAttributes("image", { align }).run()}
+                title={align === "left" ? "왼쪽 정렬" : align === "center" ? "가운데 정렬" : "오른쪽 정렬"}
+              >
+                {align === "left" && <AlignLeft size={16} />}
+                {align === "center" && <AlignCenter size={16} />}
+                {align === "right" && <AlignRight size={16} />}
+              </button>
+            ))}
+          </>
+        )}
 
         <div className={s.termDropdownWrapper}>
           <button
