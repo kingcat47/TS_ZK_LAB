@@ -4,7 +4,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "@/router";
 import { AuthProvider } from "@/contexts/AuthProvider";
 import { BookmarksProvider } from "@/contexts/BookmarksProvider";
-import { ToastProvider } from "@/contexts/ToastContext";
+import { ToastProvider } from "@/contexts/ToastProvider";
 import "@/styles/globals.scss";
 
 const rootElement = document.getElementById("root");
