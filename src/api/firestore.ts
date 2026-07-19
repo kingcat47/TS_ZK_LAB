@@ -239,3 +239,38 @@ export async function getCardNewsDetail(id: string): Promise<CardNewsDetail | nu
     papers: papersSnap.docs.map((p) => ({ id: p.id, ...p.data() as object }) as CardNewsDetail["papers"][number]),
   };
 }
+
+export interface PaperSearchItem {
+  id: string;
+  cardNewsId: string;
+  order: number;
+  type: "근본" | "발전" | "트렌드" | "한계";
+  title: string;
+  authors: string;
+  journal: string;
+}
+
+export async function getPublishedPapersForSearch(): Promise<PaperSearchItem[]> {
+  const q = query(collection(db, "cardNews"), orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  const published = snap.docs.filter((d) => d.data().published);
+
+  const results = await Promise.all(
+    published.map(async (d) => {
+      const papersSnap = await getDocs(
+        query(collection(db, "cardNews", d.id, "papers"), orderBy("order"))
+      );
+      return papersSnap.docs.map((p) => ({
+        id: p.id,
+        cardNewsId: d.id,
+        order: p.data().order as number,
+        type: p.data().type as PaperSearchItem["type"],
+        title: p.data().title as string,
+        authors: p.data().authors as string,
+        journal: p.data().journal as string,
+      }));
+    })
+  );
+
+  return results.flat();
+}

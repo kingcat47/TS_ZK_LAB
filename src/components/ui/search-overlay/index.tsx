@@ -4,9 +4,10 @@ import { Search, X } from "lucide-react";
 
 import { MOCK_CARD_NEWS } from "@/mocks/cardNews";
 import { MOCK_PAPERS } from "@/mocks/papers";
-import { getPublishedCardNews } from "@/api/firestore";
+import { getPublishedCardNews, getPublishedPapersForSearch } from "@/api/firestore";
 import type { CardNewsProps } from "@/components/ui/card-news";
 import type { Paper } from "@/mocks/papers";
+import type { PaperSearchItem } from "@/api/firestore";
 
 import s from "./styles.module.scss";
 
@@ -24,6 +25,7 @@ interface SearchOverlayProps {
 export default function SearchOverlay({ onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState("");
   const [firestoreCardNews, setFirestoreCardNews] = useState<CardNewsProps[]>([]);
+  const [firestorePapers, setFirestorePapers] = useState<PaperSearchItem[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -37,6 +39,7 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
   }, [onClose]);
 
   useEffect(() => {
+    getPublishedPapersForSearch().then(setFirestorePapers);
     getPublishedCardNews().then((items) =>
       setFirestoreCardNews(
         items.map((r) => ({
@@ -60,8 +63,10 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
       )
     : [];
 
+  const allPapers: (Paper | PaperSearchItem)[] = [...firestorePapers, ...MOCK_PAPERS];
+
   const paperResults = q
-    ? MOCK_PAPERS.filter(
+    ? allPapers.filter(
         (paper) =>
           paper.title.toLowerCase().includes(q) ||
           paper.authors.toLowerCase().includes(q) ||
@@ -74,6 +79,13 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
   function goTo(path: string) {
     navigate(path);
     onClose();
+  }
+
+  function getPaperPath(paper: Paper | PaperSearchItem) {
+    if (typeof paper.cardNewsId === "string") {
+      return `/card-news/${paper.cardNewsId}/papers/${(paper as PaperSearchItem).order}`;
+    }
+    return `/card-news/${paper.cardNewsId}/papers/${paper.id}`;
   }
 
   return (
@@ -123,9 +135,9 @@ export default function SearchOverlay({ onClose }: SearchOverlayProps) {
                 <p className={s.sectionLabel}>논문</p>
                 {paperResults.map((paper) => (
                   <button
-                    key={paper.id}
+                    key={`${paper.cardNewsId}-${paper.id}`}
                     className={s.resultItem}
-                    onClick={() => goTo(`/card-news/${paper.cardNewsId}/papers/${paper.id}`)}
+                    onClick={() => goTo(getPaperPath(paper))}
                   >
                     <span className={[s.typeBadge, TYPE_CLASS[paper.type]].join(" ")}>
                       {paper.type}
