@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Bold, Italic, List, ListOrdered, ImageIcon, Tag } from "lucide-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 import { uploadImage } from "@/api/storage";
 import type { TermInput } from "@/types/admin";
@@ -13,10 +13,11 @@ import s from "./styles.module.scss";
 
 interface ContentEditorProps {
   terms: TermInput[];
+  initialContent?: object;
   onChange: (json: object) => void;
 }
 
-export default function ContentEditor({ terms, onChange }: ContentEditorProps) {
+export default function ContentEditor({ terms, initialContent, onChange }: ContentEditorProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [termDropdownOpen, setTermDropdownOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -28,18 +29,29 @@ export default function ContentEditor({ terms, onChange }: ContentEditorProps) {
       Placeholder.configure({ placeholder: "본문을 작성하세요..." }),
       TermMark,
     ],
+    content: initialContent,
     onUpdate: ({ editor }) => {
       onChange(editor.getJSON());
     },
   });
+
+  useEffect(() => {
+    if (editor && initialContent) {
+      editor.commands.setContent(initialContent);
+    }
+  }, [initialContent]);
 
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !editor) return;
     setUploading(true);
     try {
-      const url = await uploadImage(file, `content/${Date.now()}_${file.name}`);
+      const ext = file.name.split(".").pop() ?? "jpg";
+      const url = await uploadImage(file, `content/${Date.now()}.${ext}`);
       editor.chain().focus().setImage({ src: url }).run();
+    } catch (err) {
+      console.error("이미지 업로드 실패:", err);
+      alert(`이미지 업로드 실패: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setUploading(false);
       e.target.value = "";

@@ -6,9 +6,9 @@ import s from "./styles.module.scss";
 interface SlideUploaderProps {
   thumbnail: File | null;
   thumbnailPreview: string;
-  slides: { file: File; preview: string }[];
+  slides: { file?: File; preview: string; existingUrl?: string }[];
   onThumbnailChange: (file: File, preview: string) => void;
-  onSlidesChange: (slides: { file: File; preview: string }[]) => void;
+  onSlidesChange: (slides: { file?: File; preview: string; existingUrl?: string }[]) => void;
 }
 
 export default function SlideUploader({
@@ -26,7 +26,7 @@ export default function SlideUploader({
 
   function handleSlides(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
-    const newSlides = files.map((file) => ({ file, preview: URL.createObjectURL(file) }));
+    const newSlides = files.map((file) => ({ file, preview: URL.createObjectURL(file), existingUrl: undefined }));
     onSlidesChange([...slides, ...newSlides]);
     e.target.value = "";
   }

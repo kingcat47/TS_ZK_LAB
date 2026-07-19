@@ -99,7 +99,9 @@ export async function saveCardNews(form: CardNewsFormData) {
   }
 
   const slideUrls = await Promise.all(
-    form.slides.map((s, i) => uploadImage(s.file, `cardNews/${id}/slides/${i}`))
+    form.slides.map((s, i) =>
+      s.file ? uploadImage(s.file, `cardNews/${id}/slides/${i}`) : Promise.resolve(s.existingUrl ?? "")
+    )
   );
 
   const cardNewsRef = await addDoc(collection(db, "cardNews"), {
@@ -125,6 +127,61 @@ export async function saveCardNews(form: CardNewsFormData) {
 
 export async function updateCardNewsPublished(id: string, published: boolean) {
   await updateDoc(doc(db, "cardNews", id), { published });
+}
+
+export async function getCardNewsForEdit(id: string) {
+  const snap = await getDoc(doc(db, "cardNews", id));
+  if (!snap.exists()) return null;
+  const d = snap.data();
+  const papersSnap = await getDocs(
+    query(collection(db, "cardNews", id, "papers"), orderBy("order"))
+  );
+  return {
+    id: snap.id,
+    title: d.title as string,
+    category: d.category as string,
+    tags: (d.tags as string[]) ?? [],
+    published: d.published as boolean,
+    thumbnail: d.thumbnail as string,
+    slides: (d.slides as string[]) ?? [],
+    terms: d.terms ?? [],
+    content: d.content ?? {},
+    papers: papersSnap.docs.map((p) => p.data()),
+  };
+}
+
+export async function updateCardNews(id: string, form: CardNewsFormData) {
+  const thumbnailUrl = form.thumbnail
+    ? await uploadImage(form.thumbnail, `cardNews/${id}/thumbnail_${Date.now()}`)
+    : form.existingThumbnailUrl;
+
+  const slideUrls = await Promise.all(
+    form.slides.map((s, i) =>
+      s.file
+        ? uploadImage(s.file, `cardNews/${id}/slides/${Date.now()}_${i}`)
+        : Promise.resolve(s.existingUrl ?? s.preview)
+    )
+  );
+
+  await updateDoc(doc(db, "cardNews", id), {
+    title: form.title,
+    category: form.category,
+    tags: form.tags,
+    published: form.published,
+    thumbnail: thumbnailUrl,
+    slides: slideUrls,
+    terms: form.terms,
+    content: form.content,
+  });
+
+  // 기존 논문 삭제 후 재저장
+  const papersSnap = await getDocs(collection(db, "cardNews", id, "papers"));
+  await Promise.all(papersSnap.docs.map((d) => deleteDoc(d.ref)));
+  await Promise.all(
+    form.papers.map((paper) =>
+      addDoc(collection(db, "cardNews", id, "papers"), paper)
+    )
+  );
 }
 
 export interface CardNewsDetail {

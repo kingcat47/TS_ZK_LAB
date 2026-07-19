@@ -5,7 +5,11 @@ import type { CardNewsSummary } from "@/api/firestore";
 
 import s from "./styles.module.scss";
 
-export default function PostList() {
+interface PostListProps {
+  onEdit: (id: string) => void;
+}
+
+export default function PostList({ onEdit }: PostListProps) {
   const [posts, setPosts] = useState<CardNewsSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,6 +67,13 @@ export default function PostList() {
                   onClick={() => handleTogglePublished(post.id, post.published)}
                 >
                   {post.published ? "비공개로" : "공개로"}
+                </button>
+                <button
+                  type="button"
+                  className={s.editBtn}
+                  onClick={() => onEdit(post.id)}
+                >
+                  수정
                 </button>
                 <button
                   type="button"

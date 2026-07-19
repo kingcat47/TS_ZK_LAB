@@ -39,9 +39,10 @@ export interface CardNewsFormData {
   published: boolean;
   thumbnail: File | null;
   thumbnailPreview: string;
-  slides: { file: File; preview: string }[];
+  slides: { file?: File; preview: string; existingUrl?: string }[];
+  existingThumbnailUrl: string;
   terms: TermInput[];
-  content: object; // Tiptap JSON
+  content: object | null; // Tiptap JSON
   papers: PaperInput[];
 }
 

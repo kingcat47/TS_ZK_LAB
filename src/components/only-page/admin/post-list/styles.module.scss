@@ -119,6 +119,23 @@
   }
 }
 
+.editBtn {
+  padding: 5px 12px;
+  border-radius: $radius-8;
+  border: 1px solid $color-border;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $color-surface-brand;
+    color: $color-text-brand-heavy;
+  }
+}
+
 .deleteBtn {
   padding: 5px 12px;
   border-radius: $radius-8;

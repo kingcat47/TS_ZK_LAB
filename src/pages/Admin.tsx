@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { saveCardNews } from "@/api/firestore";
-import type { CardNewsFormData, Category } from "@/types/admin";
+import { saveCardNews, updateCardNews, getCardNewsForEdit } from "@/api/firestore";
+import type { CardNewsFormData, Category, PaperInput } from "@/types/admin";
 
 import BasicInfoForm from "@/components/only-page/admin/basic-info-form";
 import SlideUploader from "@/components/only-page/admin/slide-uploader";
@@ -23,17 +23,20 @@ const INITIAL_FORM: CardNewsFormData = {
   published: false,
   thumbnail: null,
   thumbnailPreview: "",
+  existingThumbnailUrl: "",
   slides: [],
   terms: [],
-  content: {},
+  content: null,
   papers: [],
 };
 
 export default function Admin() {
   const { user, loading } = useAuth();
   const [form, setForm] = useState<CardNewsFormData>(INITIAL_FORM);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const formRef = useRef<HTMLDivElement>(null);
 
   if (loading) return null;
   if (!user) return <Navigate to="/auth/login" replace />;
@@ -49,6 +52,36 @@ export default function Admin() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  async function handleEdit(id: string) {
+    const data = await getCardNewsForEdit(id);
+    if (!data) return;
+
+    setForm({
+      title: data.title,
+      category: data.category as Category,
+      tags: data.tags,
+      published: data.published,
+      thumbnail: null,
+      thumbnailPreview: data.thumbnail,
+      existingThumbnailUrl: data.thumbnail,
+      slides: data.slides.map((url: string) => ({ preview: url, existingUrl: url })),
+      terms: data.terms,
+      content: data.content,
+      papers: data.papers as PaperInput[],
+    });
+    setEditingId(id);
+    setStatus("idle");
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+    setForm(INITIAL_FORM);
+    setStatus("idle");
+  }
+
   async function handleSubmit(published: boolean) {
     if (!form.title.trim() || !form.category) {
       alert("제목과 카테고리는 필수입니다.");
@@ -57,9 +90,14 @@ export default function Admin() {
     setSubmitting(true);
     setStatus("idle");
     try {
-      await saveCardNews({ ...form, published });
+      if (editingId) {
+        await updateCardNews(editingId, { ...form, published });
+      } else {
+        await saveCardNews({ ...form, published });
+      }
       setStatus("success");
       setForm(INITIAL_FORM);
+      setEditingId(null);
     } catch (e) {
       console.error(e);
       setStatus("error");
@@ -72,8 +110,15 @@ export default function Admin() {
     <div className={s.page}>
       <div className={s.container}>
         <div className={s.pageHeader}>
-          <h1 className={s.pageTitle}>카드뉴스 작성</h1>
+          <h1 className={s.pageTitle}>
+            {editingId ? "카드뉴스 수정" : "카드뉴스 작성"}
+          </h1>
           <div className={s.submitRow}>
+            {editingId && (
+              <button type="button" className={s.saveDraftBtn} onClick={handleCancelEdit} disabled={submitting}>
+                취소
+              </button>
+            )}
             <button
               type="button"
               className={s.saveDraftBtn}
@@ -88,23 +133,25 @@ export default function Admin() {
               onClick={() => handleSubmit(true)}
               disabled={submitting}
             >
-              {submitting ? "저장 중..." : "게시하기"}
+              {submitting ? "저장 중..." : editingId ? "수정 완료" : "게시하기"}
             </button>
           </div>
         </div>
 
         {status === "success" && (
-          <div className={s.successBanner}>게시물이 성공적으로 저장되었습니다.</div>
+          <div className={s.successBanner}>
+            {editingId ? "게시물이 수정되었습니다." : "게시물이 성공적으로 저장되었습니다."}
+          </div>
         )}
         {status === "error" && (
           <div className={s.errorBanner}>저장 중 오류가 발생했습니다. 다시 시도해주세요.</div>
         )}
 
         <div className={s.card}>
-          <PostList />
+          <PostList onEdit={handleEdit} />
         </div>
 
-        <div className={s.card}>
+        <div ref={formRef} className={s.card}>
           <BasicInfoForm
             title={form.title}
             category={form.category as Category | ""}
@@ -136,6 +183,7 @@ export default function Admin() {
         <div className={s.card}>
           <ContentEditor
             terms={form.terms}
+            initialContent={form.content}
             onChange={(v) => update("content", v)}
           />
         </div>
