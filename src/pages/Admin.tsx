@@ -9,8 +9,8 @@ import BasicInfoForm from "@/components/only-page/admin/basic-info-form";
 import SlideUploader from "@/components/only-page/admin/slide-uploader";
 import TermManager from "@/components/only-page/admin/term-manager";
 import ContentEditor from "@/components/only-page/admin/content-editor";
-import PaperManager from "@/components/only-page/admin/paper-manager";
 import PostList from "@/components/only-page/admin/post-list";
+import CardNewsPaperManager from "@/components/only-page/admin/card-news-paper-manager";
 
 import s from "./styles/admin.module.scss";
 
@@ -30,8 +30,11 @@ const INITIAL_FORM: CardNewsFormData = {
   papers: [],
 };
 
+type Tab = "posts" | "cardnews" | "papers";
+
 export default function Admin() {
   const { user, loading } = useAuth();
+  const [activeTab, setActiveTab] = useState<Tab>("posts");
   const [form, setForm] = useState<CardNewsFormData>(INITIAL_FORM);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -71,6 +74,7 @@ export default function Admin() {
     });
     setEditingId(id);
     setStatus("idle");
+    setActiveTab("cardnews");
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
@@ -109,88 +113,124 @@ export default function Admin() {
   return (
     <div className={s.page}>
       <div className={s.container}>
-        <div className={s.pageHeader}>
-          <h1 className={s.pageTitle}>
-            {editingId ? "카드뉴스 수정" : "카드뉴스 작성"}
-          </h1>
-          <div className={s.submitRow}>
-            {editingId && (
-              <button type="button" className={s.saveDraftBtn} onClick={handleCancelEdit} disabled={submitting}>
-                취소
-              </button>
+        {/* 탭 */}
+        <div className={s.tabBar}>
+          <button
+            type="button"
+            className={[s.tab, activeTab === "posts" ? s.activeTab : ""].join(" ")}
+            onClick={() => setActiveTab("posts")}
+          >
+            게시물 관리
+          </button>
+          <button
+            type="button"
+            className={[s.tab, activeTab === "cardnews" ? s.activeTab : ""].join(" ")}
+            onClick={() => setActiveTab("cardnews")}
+          >
+            카드뉴스 관리
+          </button>
+          <button
+            type="button"
+            className={[s.tab, activeTab === "papers" ? s.activeTab : ""].join(" ")}
+            onClick={() => setActiveTab("papers")}
+          >
+            논문 관리
+          </button>
+        </div>
+
+        {/* ── 게시물 관리 ── */}
+        {activeTab === "posts" && (
+          <div className={s.card}>
+            <PostList onEdit={handleEdit} />
+          </div>
+        )}
+
+        {/* ── 카드뉴스 관리 ── */}
+        {activeTab === "cardnews" && (
+          <>
+            <div className={s.pageHeader}>
+              <h1 className={s.pageTitle}>
+                {editingId ? "카드뉴스 수정" : "카드뉴스 작성"}
+              </h1>
+              <div className={s.submitRow}>
+                {editingId && (
+                  <button type="button" className={s.saveDraftBtn} onClick={handleCancelEdit} disabled={submitting}>
+                    취소
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className={s.saveDraftBtn}
+                  onClick={() => handleSubmit(false)}
+                  disabled={submitting}
+                >
+                  임시저장
+                </button>
+                <button
+                  type="button"
+                  className={s.publishBtn}
+                  onClick={() => handleSubmit(true)}
+                  disabled={submitting}
+                >
+                  {submitting ? "저장 중..." : editingId ? "수정 완료" : "게시하기"}
+                </button>
+              </div>
+            </div>
+
+            {status === "success" && (
+              <div className={s.successBanner}>
+                {editingId ? "게시물이 수정되었습니다." : "게시물이 성공적으로 저장되었습니다."}
+              </div>
             )}
-            <button
-              type="button"
-              className={s.saveDraftBtn}
-              onClick={() => handleSubmit(false)}
-              disabled={submitting}
-            >
-              임시저장
-            </button>
-            <button
-              type="button"
-              className={s.publishBtn}
-              onClick={() => handleSubmit(true)}
-              disabled={submitting}
-            >
-              {submitting ? "저장 중..." : editingId ? "수정 완료" : "게시하기"}
-            </button>
-          </div>
-        </div>
+            {status === "error" && (
+              <div className={s.errorBanner}>저장 중 오류가 발생했습니다. 다시 시도해주세요.</div>
+            )}
 
-        {status === "success" && (
-          <div className={s.successBanner}>
-            {editingId ? "게시물이 수정되었습니다." : "게시물이 성공적으로 저장되었습니다."}
+            <div ref={formRef} className={s.card}>
+              <BasicInfoForm
+                title={form.title}
+                category={form.category as Category | ""}
+                tags={form.tags}
+                published={form.published}
+                onTitleChange={(v) => update("title", v)}
+                onCategoryChange={(v) => update("category", v)}
+                onTagsChange={(v) => update("tags", v)}
+                onPublishedChange={(v) => update("published", v)}
+              />
+            </div>
+
+            <div className={s.card}>
+              <SlideUploader
+                thumbnail={form.thumbnail}
+                thumbnailPreview={form.thumbnailPreview}
+                slides={form.slides}
+                onThumbnailChange={(file, preview) =>
+                  setForm((prev) => ({ ...prev, thumbnail: file, thumbnailPreview: preview }))
+                }
+                onSlidesChange={(v) => update("slides", v)}
+              />
+            </div>
+
+            <div className={s.card}>
+              <TermManager terms={form.terms} onChange={(v) => update("terms", v)} />
+            </div>
+
+            <div className={s.card}>
+              <ContentEditor
+                terms={form.terms}
+                initialContent={form.content ?? undefined}
+                onChange={(v) => update("content", v)}
+              />
+            </div>
+          </>
+        )}
+
+        {/* ── 논문 관리 ── */}
+        {activeTab === "papers" && (
+          <div className={s.card}>
+            <CardNewsPaperManager />
           </div>
         )}
-        {status === "error" && (
-          <div className={s.errorBanner}>저장 중 오류가 발생했습니다. 다시 시도해주세요.</div>
-        )}
-
-        <div className={s.card}>
-          <PostList onEdit={handleEdit} />
-        </div>
-
-        <div ref={formRef} className={s.card}>
-          <BasicInfoForm
-            title={form.title}
-            category={form.category as Category | ""}
-            tags={form.tags}
-            published={form.published}
-            onTitleChange={(v) => update("title", v)}
-            onCategoryChange={(v) => update("category", v)}
-            onTagsChange={(v) => update("tags", v)}
-            onPublishedChange={(v) => update("published", v)}
-          />
-        </div>
-
-        <div className={s.card}>
-          <SlideUploader
-            thumbnail={form.thumbnail}
-            thumbnailPreview={form.thumbnailPreview}
-            slides={form.slides}
-            onThumbnailChange={(file, preview) =>
-              setForm((prev) => ({ ...prev, thumbnail: file, thumbnailPreview: preview }))
-            }
-            onSlidesChange={(v) => update("slides", v)}
-          />
-        </div>
-
-        <div className={s.card}>
-          <TermManager terms={form.terms} onChange={(v) => update("terms", v)} />
-        </div>
-
-        <div className={s.card}>
-          <ContentEditor
-            terms={form.terms}
-            initialContent={form.content ?? undefined}
-            onChange={(v) => update("content", v)}
-          />
-        </div>
-
-        <div className={s.card}>
-          <PaperManager papers={form.papers} onChange={(v) => update("papers", v)} />
-        </div>
       </div>
     </div>
   );

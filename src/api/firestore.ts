@@ -190,14 +190,16 @@ export async function updateCardNews(id: string, form: CardNewsFormData) {
     content: form.content,
   });
 
-  // 기존 논문 삭제 후 재저장
-  const papersSnap = await getDocs(collection(db, "cardNews", id, "papers"));
-  await Promise.all(papersSnap.docs.map((d) => deleteDoc(d.ref)));
-  await Promise.all(
-    form.papers.map((paper) =>
-      addDoc(collection(db, "cardNews", id, "papers"), paper)
-    )
-  );
+  // 논문은 논문 관리 탭에서 별도 관리 (form.papers가 있을 때만 업데이트)
+  if (form.papers.length > 0) {
+    const papersSnap = await getDocs(collection(db, "cardNews", id, "papers"));
+    await Promise.all(papersSnap.docs.map((d) => deleteDoc(d.ref)));
+    await Promise.all(
+      form.papers.map((paper) =>
+        addDoc(collection(db, "cardNews", id, "papers"), paper)
+      )
+    );
+  }
 }
 
 export interface CardNewsDetail {
@@ -238,6 +240,91 @@ export async function getCardNewsDetail(id: string): Promise<CardNewsDetail | nu
     content: d.content ?? {},
     papers: papersSnap.docs.map((p) => ({ id: p.id, ...p.data() as object }) as CardNewsDetail["papers"][number]),
   };
+}
+
+// ── 독립 논문 컬렉션 ──────────────────────────────────────
+export interface PaperDocData {
+  title: string;
+  authors: string;
+  journal: string;
+  year: number;
+  url: string;
+  type: string;
+  summary: { heading: string; content: string }[];
+}
+
+export interface PaperDocItem extends PaperDocData {
+  id: string;
+  createdAt: number;
+}
+
+export async function getPapersList(): Promise<PaperDocItem[]> {
+  const q = query(collection(db, "papers"), orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({
+    id: d.id,
+    title: d.data().title as string,
+    authors: d.data().authors as string,
+    journal: d.data().journal as string,
+    year: d.data().year as number,
+    url: d.data().url as string,
+    type: d.data().type as string,
+    summary: (d.data().summary ?? []) as { heading: string; content: string }[],
+    createdAt: d.data().createdAt?.toMillis?.() ?? 0,
+  }));
+}
+
+export async function savePaperDoc(data: PaperDocData): Promise<string> {
+  const ref = await addDoc(collection(db, "papers"), { ...data, createdAt: serverTimestamp() });
+  return ref.id;
+}
+
+export async function updatePaperDoc(id: string, data: PaperDocData): Promise<void> {
+  await updateDoc(doc(db, "papers", id), data);
+}
+
+export async function deletePaperDoc(id: string): Promise<void> {
+  await deleteDoc(doc(db, "papers", id));
+}
+
+// ── 카드뉴스별 논문 직접 CRUD ──────────────────────────────
+export interface StoredPaper {
+  id: string;
+  order: number;
+  type: string;
+  title: string;
+  authors: string;
+  journal: string;
+  year: number;
+  url: string;
+  thumbnail?: string;
+  content?: object;
+  summary: { heading: string; content: string | object }[];
+}
+
+export async function getPapersForCardNews(cardNewsId: string): Promise<StoredPaper[]> {
+  const q = query(collection(db, "cardNews", cardNewsId, "papers"), orderBy("order"));
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as StoredPaper));
+}
+
+export async function addPaperToCardNews(
+  cardNewsId: string,
+  paper: Omit<StoredPaper, "id">
+): Promise<void> {
+  await addDoc(collection(db, "cardNews", cardNewsId, "papers"), paper);
+}
+
+export async function updatePaperInCardNews(
+  cardNewsId: string,
+  paperId: string,
+  paper: Partial<Omit<StoredPaper, "id">>
+): Promise<void> {
+  await updateDoc(doc(db, "cardNews", cardNewsId, "papers", paperId), paper);
+}
+
+export async function deletePaperFromCardNews(cardNewsId: string, paperId: string): Promise<void> {
+  await deleteDoc(doc(db, "cardNews", cardNewsId, "papers", paperId));
 }
 
 export interface PaperSearchItem {

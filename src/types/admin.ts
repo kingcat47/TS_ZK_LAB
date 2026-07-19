@@ -22,6 +22,7 @@ export interface SummaryInput {
 }
 
 export interface PaperInput {
+  docId?: string; // papers 컬렉션 ID (PaperSelector로 연결 시)
   order: number;
   type: PaperType;
   title: string;

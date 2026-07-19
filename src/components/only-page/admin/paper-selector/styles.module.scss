@@ -1,0 +1,156 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-14;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: $spacing-12;
+  border-bottom: 2px solid $color-border;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.selectedCount {
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-text-brand-heavy;
+  background-color: $color-surface-brand-subtle;
+  padding: 3px 10px;
+  border-radius: $radius-full;
+}
+
+.loading,
+.empty {
+  font-size: 14px;
+  color: $color-text-subtle;
+  text-align: center;
+  padding: $spacing-24;
+
+  strong { color: $color-text; }
+}
+
+.paperList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+.paperRow {
+  border: 1px solid $color-border;
+  border-radius: $radius-10;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &.selectedRow {
+    border-color: $color-surface-brand;
+    background-color: $color-surface-brand-subtle;
+  }
+}
+
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: $spacing-12;
+  padding: $spacing-12 $spacing-16;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: $color-surface-brand;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.paperInfo {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-8;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.typeBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-text-brand-heavy;
+  background-color: $color-surface-brand-subtle;
+  border-radius: $radius-full;
+  padding: 2px 8px;
+  flex-shrink: 0;
+
+  .selectedRow & {
+    background-color: $color-surface-brand;
+    color: $color-text-white;
+  }
+}
+
+.paperTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.paperMeta {
+  font-size: 12px;
+  color: $color-text-subtle;
+}
+
+.overrideRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-16;
+  padding: $spacing-10 $spacing-16;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: $color-surface;
+}
+
+.overrideField {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+}
+
+.overrideLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  white-space: nowrap;
+}
+
+.orderInput {
+  width: 56px;
+  padding: 4px 8px;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  font-size: 13px;
+  color: $color-text;
+  outline: none;
+  text-align: center;
+
+  &:focus { border-color: $color-surface-brand; }
+}
+
+.typeSelect {
+  padding: 4px 8px;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  font-size: 13px;
+  color: $color-text;
+  background-color: $color-surface;
+  outline: none;
+  cursor: pointer;
+
+  &:focus { border-color: $color-surface-brand; }
+}

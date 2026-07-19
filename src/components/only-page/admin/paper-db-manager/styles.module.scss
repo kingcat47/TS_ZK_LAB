@@ -1,0 +1,400 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-16;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: $spacing-12;
+  border-bottom: 2px solid $color-border;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+  padding: $spacing-8 $spacing-16;
+  background-color: $color-surface-brand;
+  color: $color-text-white;
+  border: none;
+  border-radius: $radius-8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover { background-color: $color-surface-brand-heavy; }
+}
+
+// ── Form ──────────────────────────────────────────────────
+
+.formCard {
+  border: 1px solid $color-border;
+  border-radius: $radius-12;
+  padding: $spacing-20;
+  background-color: $color-surface-subtle;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-14;
+}
+
+.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.formTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: $color-text;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: $radius-8;
+
+  &:hover { background-color: $color-border; }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-12;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-6;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.input {
+  padding: $spacing-10 $spacing-12;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  font-size: 14px;
+  color: $color-text;
+  background-color: $color-surface;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus { border-color: $color-surface-brand; }
+  &::placeholder { color: $color-text-subtle; }
+}
+
+.textarea {
+  padding: $spacing-10 $spacing-12;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  font-size: 14px;
+  color: $color-text;
+  background-color: $color-surface;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+  transition: border-color 0.15s ease;
+
+  &:focus { border-color: $color-surface-brand; }
+  &::placeholder { color: $color-text-subtle; }
+}
+
+.typeGroup {
+  display: flex;
+  gap: $spacing-8;
+  flex-wrap: wrap;
+}
+
+.typeBtn {
+  padding: 6px 14px;
+  border-radius: $radius-full;
+  border: 1px solid $color-border;
+  background-color: $color-surface;
+  font-size: 13px;
+  color: $color-text-subtle;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover { border-color: $color-surface-brand; color: $color-text-brand-heavy; }
+
+  &.selected {
+    background-color: $color-surface-brand;
+    border-color: $color-surface-brand;
+    color: $color-text-white;
+    font-weight: 600;
+  }
+}
+
+.summaryItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  padding: $spacing-12;
+  background-color: $color-surface;
+  border-radius: $radius-10;
+  margin-top: $spacing-8;
+  border: 1px solid $color-border;
+}
+
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summaryNum {
+  font-size: 12px;
+  font-weight: 700;
+  color: $color-text-subtle;
+}
+
+.addSmallBtn {
+  background: none;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  cursor: pointer;
+
+  &:hover { border-color: $color-surface-brand; color: $color-text-brand-heavy; }
+}
+
+.removeSmallBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+
+  &:hover { color: #DC2626; }
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-10;
+  padding-top: $spacing-8;
+  border-top: 1px solid $color-border;
+}
+
+.cancelBtn {
+  padding: $spacing-10 $spacing-20;
+  border: 1px solid $color-border;
+  border-radius: $radius-8;
+  background: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  cursor: pointer;
+
+  &:hover { border-color: $color-surface-brand; color: $color-text-brand-heavy; }
+}
+
+.saveBtn {
+  padding: $spacing-10 $spacing-24;
+  border: none;
+  border-radius: $radius-8;
+  background-color: $color-surface-brand;
+  color: $color-text-white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover { background-color: $color-surface-brand-heavy; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+// ── Paper list ─────────────────────────────────────────────
+
+.empty {
+  text-align: center;
+  color: $color-text-subtle;
+  font-size: 14px;
+  padding: $spacing-32;
+}
+
+.paperList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+}
+
+.paperCard {
+  border: 1px solid $color-border;
+  border-radius: $radius-12;
+  overflow: hidden;
+  background-color: $color-surface;
+}
+
+.paperHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-14 $spacing-16;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+
+  &:hover { background-color: $color-surface-subtle; }
+}
+
+.paperHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: $spacing-10;
+  min-width: 0;
+  flex: 1;
+}
+
+.paperHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: $spacing-8;
+  color: $color-text-subtle;
+  flex-shrink: 0;
+}
+
+.typeBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-text-brand-heavy;
+  background-color: $color-surface-brand-subtle;
+  border-radius: $radius-full;
+  padding: 2px 8px;
+  flex-shrink: 0;
+}
+
+.paperTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  font-size: 12px;
+  color: $color-text-subtle;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.editBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: $radius-8;
+
+  &:hover { color: $color-text-brand-heavy; background-color: $color-surface-brand-subtle; }
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $color-text-subtle;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: $radius-8;
+
+  &:hover { color: #DC2626; background-color: #FEF2F2; }
+}
+
+.paperDetail {
+  padding: $spacing-14 $spacing-16;
+  border-top: 1px solid $color-border;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  background-color: $color-surface-subtle;
+}
+
+.detailRow {
+  display: flex;
+  gap: $spacing-10;
+  font-size: 13px;
+  color: $color-text;
+
+  span {
+    font-weight: 600;
+    color: $color-text-subtle;
+    min-width: 36px;
+  }
+
+  a {
+    color: $color-text-brand-heavy;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &:hover { text-decoration: underline; }
+  }
+}
+
+.summaryPreview {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+  margin-top: $spacing-4;
+}
+
+.summaryPreviewItem {
+  font-size: 13px;
+  color: $color-text;
+
+  strong {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  p {
+    color: $color-text-subtle;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}
