@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
 import { useAuth } from "../auth/AuthContext";
-import { getBookmarks, saveBookmarks } from "@/api/firestore";
+import { getBookmarks, saveBookmarks, updateCardNewsBookmarkCount } from "@/api/firestore";
 import { BookmarksContext } from "./BookmarksContext";
 import type { BookmarksState } from "./BookmarksContext";
 
@@ -34,12 +34,14 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
   }
 
   function toggleCardNews(id: string) {
+    const isBookmarked = bookmarks.cardNews.includes(id);
     save({
       ...bookmarks,
-      cardNews: bookmarks.cardNews.includes(id)
+      cardNews: isBookmarked
         ? bookmarks.cardNews.filter((i) => i !== id)
         : [...bookmarks.cardNews, id],
     });
+    updateCardNewsBookmarkCount(id, isBookmarked ? -1 : 1);
   }
 
   function togglePaper(cardNewsId: string) {

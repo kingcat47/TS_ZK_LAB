@@ -5,8 +5,27 @@
   line-height: 1.4;
   width: 100%;
   padding-top: $spacing-40;
+  margin-bottom: $spacing-10;
 
   @media (max-width: 768px) {
     font-size: 20px;
   }
+}
+
+.titleBlock {
+  width: 100%;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-16;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: $color-text-subtle;
 }

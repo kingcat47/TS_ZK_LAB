@@ -209,6 +209,8 @@ export interface CardNewsDetail {
   slides: string[];
   terms: { word: string; description: string }[];
   content: object;
+  views: number;
+  bookmarkCount: number;
   papers: {
     id: string;
     order: number;
@@ -238,6 +240,8 @@ export async function getCardNewsDetail(id: string): Promise<CardNewsDetail | nu
     slides: d.slides ?? [],
     terms: d.terms ?? [],
     content: d.content ?? {},
+    views: (d.views as number) ?? 0,
+    bookmarkCount: (d.bookmarkCount as number) ?? 0,
     papers: papersSnap.docs.map((p) => ({ id: p.id, ...p.data() as object }) as CardNewsDetail["papers"][number]),
   };
 }
@@ -366,6 +370,10 @@ export async function getPublishedPapersForSearch(): Promise<PaperSearchItem[]> 
 
 export async function incrementCardNewsView(id: string): Promise<void> {
   await updateDoc(doc(db, "cardNews", id), { views: increment(1) });
+}
+
+export async function updateCardNewsBookmarkCount(id: string, delta: 1 | -1): Promise<void> {
+  await updateDoc(doc(db, "cardNews", id), { bookmarkCount: increment(delta) });
 }
 
 export async function logAccess(uid: string | null): Promise<void> {

@@ -6,6 +6,7 @@ import CardNewsViewer from "@/components/only-page/card-news-detail/card-news-vi
 import TermSection from "@/components/only-page/card-news-detail/term-section";
 import TiptapViewer from "@/components/only-page/card-news-detail/tiptap-viewer";
 import ReferenceSection from "@/components/only-page/card-news-detail/reference-section";
+import { Eye, Bookmark } from "lucide-react";
 import { getCardNewsDetail, incrementCardNewsView, logAccess } from "@/api/firestore";
 import type { CardNewsDetail as FirestoreDetail } from "@/api/firestore";
 import { useAuth } from "@/contexts/auth/AuthContext";
@@ -41,7 +42,19 @@ export default function CardNewsDetail() {
 
     return (
       <MainLayout gap={48}>
-        <h1 className={s.pageTitle}>{data.title}</h1>
+        <div className={s.titleBlock}>
+          <h1 className={s.pageTitle}>{data.title}</h1>
+          <div className={s.metaRow}>
+            <span className={s.metaItem}>
+              <Eye size={14} />
+              {data.views.toLocaleString()}
+            </span>
+            <span className={s.metaItem}>
+              <Bookmark size={14} />
+              {data.bookmarkCount.toLocaleString()}
+            </span>
+          </div>
+        </div>
         <CardNewsViewer slides={data.slides} title={data.title} />
         {data.terms.length > 0 && <TermSection terms={data.terms} />}
         <TiptapViewer content={data.content} />
