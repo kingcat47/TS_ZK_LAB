@@ -6,14 +6,16 @@ import CardNewsViewer from "@/components/only-page/card-news-detail/card-news-vi
 import TermSection from "@/components/only-page/card-news-detail/term-section";
 import TiptapViewer from "@/components/only-page/card-news-detail/tiptap-viewer";
 import ReferenceSection from "@/components/only-page/card-news-detail/reference-section";
-import { getCardNewsDetail } from "@/api/firestore";
+import { getCardNewsDetail, incrementCardNewsView, logAccess } from "@/api/firestore";
 import type { CardNewsDetail as FirestoreDetail } from "@/api/firestore";
+import { useAuth } from "@/contexts/auth/AuthContext";
 import type { Reference } from "@/components/only-page/card-news-detail/reference-section";
 
 import s from "./styles/cardNewsDetail.module.scss";
 
 export default function CardNewsDetail() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [data, setData] = useState<FirestoreDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,6 +24,8 @@ export default function CardNewsDetail() {
     getCardNewsDetail(id)
       .then(setData)
       .finally(() => setLoading(false));
+    incrementCardNewsView(id);
+    logAccess(user?.uid ?? null);
   }, [id]);
 
   if (loading) return <MainLayout><p>불러오는 중...</p></MainLayout>;

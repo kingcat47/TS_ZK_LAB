@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { User } from "firebase/auth";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/api/firebase";
+import { upsertUserProfile } from "@/api/firestore";
 import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -13,6 +14,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
+      if (firebaseUser) {
+        upsertUserProfile(firebaseUser.uid, firebaseUser.email, firebaseUser.displayName);
+      }
     });
     return unsubscribe;
   }, []);

@@ -1,6 +1,6 @@
 import {
   collection, addDoc, updateDoc, deleteDoc, setDoc,
-  doc, getDocs, getDoc, query, orderBy, serverTimestamp,
+  doc, getDocs, getDoc, query, orderBy, serverTimestamp, increment,
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { uploadImage } from "./storage";
@@ -360,4 +360,150 @@ export async function getPublishedPapersForSearch(): Promise<PaperSearchItem[]> 
   );
 
   return results.flat();
+}
+
+// ── Analytics ─────────────────────────────────────────────
+
+export async function incrementCardNewsView(id: string): Promise<void> {
+  await updateDoc(doc(db, "cardNews", id), { views: increment(1) });
+}
+
+export async function logAccess(uid: string | null): Promise<void> {
+  const now = new Date();
+  const date = now.toISOString().split("T")[0];
+  await addDoc(collection(db, "accessLogs"), {
+    uid,
+    hour: now.getHours(),
+    date,
+    timestamp: serverTimestamp(),
+  });
+}
+
+export async function upsertUserProfile(
+  uid: string,
+  email: string | null,
+  displayName: string | null
+): Promise<void> {
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) {
+    await setDoc(userRef, {
+      email: email ?? "",
+      displayName: displayName ?? "",
+      createdAt: serverTimestamp(),
+      lastSeen: serverTimestamp(),
+    });
+  } else {
+    await updateDoc(userRef, { lastSeen: serverTimestamp() });
+  }
+}
+
+export interface AnalyticsData {
+  totalUsers: number;
+  newUsersLast7Days: number;
+  todayActiveUsers: number;
+  weekActiveUsers: number;
+  monthActiveUsers: number;
+  hourlyAccess: number[];
+  cardNewsStats: {
+    id: string;
+    title: string;
+    category: string;
+    views: number;
+    bookmarkCount: number;
+  }[];
+  categoryStats: { category: string; count: number }[];
+  recentUsers: { uid: string; email: string; displayName: string; createdAt: number }[];
+}
+
+export async function getAnalyticsData(): Promise<AnalyticsData> {
+  const now = new Date();
+  const todayStr = now.toISOString().split("T")[0];
+  const sevenDaysAgo = now.getTime() - 7 * 24 * 60 * 60 * 1000;
+  const thirtyDaysAgo = now.getTime() - 30 * 24 * 60 * 60 * 1000;
+
+  // 사용자
+  const usersSnap = await getDocs(collection(db, "users"));
+  const users = usersSnap.docs.map((d) => ({
+    uid: d.id,
+    email: d.data().email as string,
+    displayName: d.data().displayName as string,
+    createdAt: d.data().createdAt?.toMillis?.() ?? 0,
+  }));
+  const totalUsers = users.length;
+  const newUsersLast7Days = users.filter((u) => u.createdAt >= sevenDaysAgo).length;
+  const recentUsers = [...users].sort((a, b) => b.createdAt - a.createdAt).slice(0, 10);
+
+  // 접속 로그
+  const logsSnap = await getDocs(collection(db, "accessLogs"));
+  const logs = logsSnap.docs.map((d) => ({
+    uid: d.data().uid as string | null,
+    hour: d.data().hour as number,
+    date: d.data().date as string,
+    ts: d.data().timestamp?.toMillis?.() ?? 0,
+  }));
+
+  const todayLogs = logs.filter((l) => l.date === todayStr);
+  const weekLogs = logs.filter((l) => l.ts >= sevenDaysAgo);
+  const monthLogs = logs.filter((l) => l.ts >= thirtyDaysAgo);
+
+  const countUnique = (arr: typeof logs) =>
+    new Set(arr.map((l) => l.uid).filter(Boolean)).size;
+
+  const todayActiveUsers = countUnique(todayLogs);
+  const weekActiveUsers = countUnique(weekLogs);
+  const monthActiveUsers = countUnique(monthLogs);
+
+  const hourlyAccess = Array(24).fill(0) as number[];
+  logs.forEach((l) => { hourlyAccess[l.hour]++; });
+
+  // 카드뉴스
+  const cnSnap = await getDocs(query(collection(db, "cardNews"), orderBy("createdAt", "desc")));
+  const cardNewsItems = cnSnap.docs.map((d) => ({
+    id: d.id,
+    title: d.data().title as string,
+    category: d.data().category as string,
+    views: (d.data().views as number) ?? 0,
+    bookmarkCount: 0,
+  }));
+
+  // 북마크 집계 (사용자별)
+  const bookmarkMap: Record<string, number> = {};
+  await Promise.all(
+    usersSnap.docs.map(async (userDoc) => {
+      const bmSnap = await getDoc(doc(db, "users", userDoc.id, "data", "bookmarks"));
+      if (!bmSnap.exists()) return;
+      const ids: (string | number)[] = bmSnap.data().cardNews ?? [];
+      ids.forEach((id) => {
+        const key = String(id);
+        bookmarkMap[key] = (bookmarkMap[key] ?? 0) + 1;
+      });
+    })
+  );
+
+  const cardNewsStats = cardNewsItems.map((cn) => ({
+    ...cn,
+    bookmarkCount: bookmarkMap[cn.id] ?? 0,
+  }));
+
+  // 카테고리별 인기도
+  const categoryMap: Record<string, number> = {};
+  cardNewsStats.forEach((cn) => {
+    categoryMap[cn.category] = (categoryMap[cn.category] ?? 0) + cn.views + cn.bookmarkCount;
+  });
+  const categoryStats = Object.entries(categoryMap)
+    .map(([category, count]) => ({ category, count }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    totalUsers,
+    newUsersLast7Days,
+    todayActiveUsers,
+    weekActiveUsers,
+    monthActiveUsers,
+    hourlyAccess,
+    cardNewsStats,
+    categoryStats,
+    recentUsers,
+  };
 }

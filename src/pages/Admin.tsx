@@ -11,6 +11,7 @@ import TermManager from "@/components/only-page/admin/term-manager";
 import ContentEditor from "@/components/only-page/admin/content-editor";
 import PostList from "@/components/only-page/admin/post-list";
 import CardNewsPaperManager from "@/components/only-page/admin/card-news-paper-manager";
+import Analytics from "@/components/only-page/admin/analytics";
 
 import s from "./styles/admin.module.scss";
 
@@ -30,7 +31,7 @@ const INITIAL_FORM: CardNewsFormData = {
   papers: [],
 };
 
-type Tab = "posts" | "cardnews" | "papers";
+type Tab = "posts" | "cardnews" | "papers" | "analytics";
 
 export default function Admin() {
   const { user, loading } = useAuth();
@@ -136,6 +137,13 @@ export default function Admin() {
           >
             논문 관리
           </button>
+          <button
+            type="button"
+            className={[s.tab, activeTab === "analytics" ? s.activeTab : ""].join(" ")}
+            onClick={() => setActiveTab("analytics")}
+          >
+            통계
+          </button>
         </div>
 
         {/* ── 게시물 관리 ── */}
@@ -229,6 +237,13 @@ export default function Admin() {
         {activeTab === "papers" && (
           <div className={s.card}>
             <CardNewsPaperManager />
+          </div>
+        )}
+
+        {/* ── 통계 ── */}
+        {activeTab === "analytics" && (
+          <div className={s.card}>
+            <Analytics />
           </div>
         )}
       </div>
