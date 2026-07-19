@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Newspaper, BookOpen, Bookmark, LogOut, Search } from "lucide-react";
+import { Newspaper, BookOpen, Bookmark, LogOut, Search, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui";
@@ -16,7 +16,12 @@ export default function Header() {
   const { user } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -48,6 +53,14 @@ export default function Header() {
               <Search size={20} />
             </button>
 
+            <button
+              className={s.hamburger_button}
+              onClick={() => setIsMenuOpen((v) => !v)}
+              aria-label="메뉴"
+            >
+              {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+
             {user ? (
               <div className={s.profileWrapper} ref={dropdownRef}>
                 <button className={s.profileBtn} onClick={() => setIsDropdownOpen((v) => !v)}>
@@ -76,6 +89,13 @@ export default function Header() {
             )}
           </div>
         </div>
+        {isMenuOpen && (
+          <nav className={s.mobile_nav} aria-label="모바일 메뉴">
+            <HeaderItem text="카드뉴스" icon={Newspaper} href="/" isActive={pathname === "/"} />
+            <HeaderItem text="논문" icon={BookOpen} href="/papers" isActive={pathname.startsWith("/papers")} />
+            <HeaderItem text="찜한 목록" icon={Bookmark} href="/bookmarks" isActive={pathname.startsWith("/bookmarks")} />
+          </nav>
+        )}
       </header>
 
       {isSearchOpen && <SearchOverlay onClose={() => setIsSearchOpen(false)} />}
