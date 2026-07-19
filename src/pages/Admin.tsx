@@ -183,7 +183,7 @@ export default function Admin() {
         <div className={s.card}>
           <ContentEditor
             terms={form.terms}
-            initialContent={form.content}
+            initialContent={form.content ?? undefined}
             onChange={(v) => update("content", v)}
           />
         </div>
