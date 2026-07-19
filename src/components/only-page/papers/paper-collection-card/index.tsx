@@ -3,6 +3,7 @@ import { Bookmark } from "lucide-react";
 
 import type { CardNewsProps } from "@/components/ui/card-news";
 import { useBookmarks } from "@/contexts/BookmarksContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 import s from "./styles.module.scss";
 
@@ -20,8 +21,15 @@ interface PaperCollectionCardProps {
 
 export default function PaperCollectionCard({ cardNews, papers }: PaperCollectionCardProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { isPaperBookmarked, togglePaper } = useBookmarks();
   const bookmarked = isPaperBookmarked(String(cardNews.id));
+
+  const handleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { navigate("/auth/login"); return; }
+    togglePaper(String(cardNews.id));
+  };
 
   return (
     <article className={s.card} onClick={() => navigate(`/card-news/${cardNews.id}/papers`)}>
@@ -29,7 +37,7 @@ export default function PaperCollectionCard({ cardNews, papers }: PaperCollectio
         <img src={cardNews.thumbnail} alt={cardNews.title} />
         <button
           className={[s.bookmarkBtn, bookmarked ? s.bookmarked : ""].join(" ")}
-          onClick={(e) => { e.stopPropagation(); togglePaper(String(cardNews.id)); }}
+          onClick={handleBookmark}
           title={bookmarked ? "찜 해제" : "찜하기"}
         >
           <Bookmark size={16} fill={bookmarked ? "currentColor" : "none"} />

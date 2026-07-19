@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Bookmark } from "lucide-react";
 
 import { useBookmarks } from "@/contexts/BookmarksContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 import s from "./styles.module.scss";
 
@@ -16,8 +17,15 @@ export interface CardNewsProps {
 
 export default function CardNews({ id, thumbnail, title, description, category, date }: CardNewsProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { isCardNewsBookmarked, toggleCardNews } = useBookmarks();
   const bookmarked = isCardNewsBookmarked(String(id));
+
+  const handleBookmark = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!user) { navigate("/auth/login"); return; }
+    toggleCardNews(String(id));
+  };
 
   return (
     <article className={s.card} onClick={() => navigate(`/card-news/${id}`)}>
@@ -25,7 +33,7 @@ export default function CardNews({ id, thumbnail, title, description, category, 
         <img src={thumbnail} alt={title} />
         <button
           className={[s.bookmarkBtn, bookmarked ? s.bookmarked : ""].join(" ")}
-          onClick={(e) => { e.stopPropagation(); toggleCardNews(String(id)); }}
+          onClick={handleBookmark}
           title={bookmarked ? "찜 해제" : "찜하기"}
         >
           <Bookmark size={16} fill={bookmarked ? "currentColor" : "none"} />
