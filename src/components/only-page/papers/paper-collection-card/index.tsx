@@ -2,9 +2,9 @@ import { useNavigate } from "react-router-dom";
 import { Bookmark } from "lucide-react";
 
 import type { CardNewsProps } from "@/components/ui/card-news";
-import { useBookmarks } from "@/contexts/BookmarksContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/contexts/ToastContext";
+import { useBookmarks } from "@/contexts/bookmarks/BookmarksContext";
+import { useAuth } from "@/contexts/auth/AuthContext";
+import { useToast } from "@/contexts/toast/ToastContext";
 
 import s from "./styles.module.scss";
 

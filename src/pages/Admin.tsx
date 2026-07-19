@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth/AuthContext";
 import { saveCardNews, updateCardNews, getCardNewsForEdit } from "@/api/firestore";
 import type { CardNewsFormData, Category, PaperInput } from "@/types/admin";
 

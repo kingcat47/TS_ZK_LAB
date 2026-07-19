@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui";
 import HeaderItem from "@/components/ui/header/header-item";
 import SearchOverlay from "@/components/ui/search-overlay";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/auth/AuthContext";
 import { signOut } from "@/api/auth";
 
 import s from "./styles.module.scss";

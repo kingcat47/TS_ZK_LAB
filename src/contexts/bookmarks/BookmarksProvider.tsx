@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../auth/AuthContext";
 import { getBookmarks, saveBookmarks } from "@/api/firestore";
 import { BookmarksContext } from "./BookmarksContext";
 import type { BookmarksState } from "./BookmarksContext";
