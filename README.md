@@ -1,126 +1,79 @@
-# React Default Template
+# TS ZK Lab
 
-내가 쓰려고 만든 템플릿.
+정보보안 분야의 최신 논문과 트렌드를 카드뉴스 형식으로 소개하는 웹 서비스입니다.
 
-## 사용 방법
+## 주요 기능
 
-```bash
-# 1. 템플릿으로 프로젝트 생성
-npx degit kingcat47/React_default-template .
-
-# 2. 패키지 설치
-npm install
-
-# 3. .env 설정
-cp .env.example .env
-
-# 4. Git 초기화 및 원격 저장소 연결
-git init
-git remote add origin repo_url
-git add .
-git commit -m "Initial commit from template"
-git push -u origin main
-```
+- **카드뉴스** — 슬라이드 형식으로 보안 주제를 쉽게 읽을 수 있는 카드뉴스
+- **논문 아카이브** — 각 카드뉴스와 연결된 근본/발전/트렌드/한계 논문 목록
+- **논문 상세** — 서론/본론/결론으로 구조화된 논문 요약
+- **검색** — 카드뉴스 및 논문 통합 검색
+- **찜하기** — Google 계정 기반 북마크 (기기 간 동기화)
+- **어드민** — 게시물 작성/수정/삭제, 게시 여부 관리
 
 ## 기술 스택
 
-- React 19 + TypeScript
-- Vite
-- SCSS Modules (variables.scss 전역 자동 주입)
-- React Router DOM v7
-- ESLint
+| 분류 | 기술 |
+|------|------|
+| Frontend | React 19, TypeScript, Vite |
+| Routing | React Router v7 |
+| Styling | SCSS Modules + Design Tokens |
+| Editor | Tiptap |
+| Auth / DB | Firebase Authentication, Firestore |
+| Storage | Cloudflare R2 + Workers |
+| Deployment | Vercel |
 
-## 폴더 구조
+## 로컬 실행
+
+```bash
+npm install
+npm run dev
+```
+
+`.env.local` 파일을 만들어 아래 값을 설정해야 합니다.
+
+```env
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+VITE_ADMIN_UID=
+VITE_UPLOAD_WORKER_URL=
+VITE_ADMIN_TOKEN=
+```
+
+## Firestore 보안 규칙
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /cardNews/{id} {
+      allow read: if true;
+      allow write: if request.auth.uid == "<ADMIN_UID>";
+      match /papers/{paperId} {
+        allow read: if true;
+        allow write: if request.auth.uid == "<ADMIN_UID>";
+      }
+    }
+    match /users/{uid}/data/{docId} {
+      allow read, write: if request.auth.uid == uid;
+    }
+  }
+}
+```
+
+## 프로젝트 구조
 
 ```
 src/
-├── assets/         # 이미지, 아이콘 등 정적 파일
-├── components/
-│   ├── auth/       # 로그인 관련 컴포넌트
-│   ├── layout/     # 레이아웃 컴포넌트
-│   └── ui/         # 공용 UI 컴포넌트
-├── hooks/          # 커스텀 훅
-├── pages/          # 페이지 컴포넌트
-├── styles/         # 전역 스타일
-├── types/          # 타입 정의
-├── utils/          # 유틸리티 함수
-└── router.tsx      # 라우터 설정
-```
-
-## 라우터 구조
-
-Header가 필요한 일반 페이지는 `children` 안에, 로그인처럼 Header 없는 페이지는 바깥에 추가.
-
-```tsx
-const Router = createBrowserRouter([
-  {
-    element: <RootLayout />,   // Header 포함
-    children: [
-      { path: "/", element: <Home /> },
-      { path: "/about", element: <About /> },
-    ],
-  },
-  {
-    path: "/auth/login",       // Header 없는 페이지
-    element: <LoginPage />,
-  },
-]);
-```
-
-## UI 컴포넌트
-
-```tsx
-import { Button, Checkbox, Header, Input, Spacing, HStack, VStack, Typo } from "@/components/ui";
-```
-
-| 컴포넌트 | 설명 |
-|---|---|
-| `Button` | size(large/medium), variant(primary/secondary/tertiary), pending 스피너 |
-| `Input` | label, size, variant, error 메시지, 좌우 아이콘 |
-| `Checkbox` | controlled/uncontrolled, indeterminate, label/description/error |
-| `Typo` | Display / Headline / BodyLarge / Body / Subtext / Caption |
-| `HStack` / `VStack` | flex 레이아웃, align/justify/gap prop |
-| `Spacing` | 수직/수평 여백 컴포넌트 |
-| `Header` | 로고 + 네비게이션 + 로그인 버튼 |
-| `MainLayout` | 최대 너비 1200px 컨텐츠 래퍼 |
-
-## 레이아웃
-
-```tsx
-import { RootLayout, MainLayout, Authlayout } from "@/components/layout";
-```
-
-- `RootLayout` — 앱 전체를 감싸는 최상위 레이아웃 (Header 포함)
-- `MainLayout` — 일반 페이지용 컨텐츠 래퍼
-- `Authlayout` — 로그인 등 인증 페이지용 레이아웃
-
-## 로그인 컴포넌트 (LoginModal)
-
-SNS 로그인 버튼과 전화번호 로그인 링크를 포함한 로그인 UI 컴포넌트.
-
-```tsx
-import LoginModal from "@/components/auth";
-
-<LoginModal providers={["google", "kakao", "naver"]} showPhoneLogin />
-```
-
-| prop | 타입 | 기본값 | 설명 |
-|---|---|---|---|
-| providers | `("google" \| "kakao" \| "naver")[]` | `["google", "kakao", "naver"]` | 표시할 SNS 로그인 버튼 |
-| showPhoneLogin | `boolean` | `false` | 전화번호 로그인 링크 표시 여부 |
-
-```tsx
-// 구글만 + 전화번호 링크 포함
-<LoginModal providers={["google"]} showPhoneLogin />
-
-// 국내용 (카카오 + 네이버)
-<LoginModal providers={["kakao", "naver"]} />
-```
-
-## 경로 별칭
-
-`@/`는 `src/`를 가리킵니다.
-
-```tsx
-import { Button } from "@/components/ui";
+├── api/          # Firebase, Firestore, 이미지 업로드
+├── components/   # 공통 UI 및 페이지별 컴포넌트
+├── contexts/     # Auth, Bookmarks Context
+├── mocks/        # 초기 목데이터
+├── pages/        # 라우트 페이지
+├── styles/       # 전역 SCSS 변수/토큰
+└── types/        # 공통 TypeScript 타입
 ```
