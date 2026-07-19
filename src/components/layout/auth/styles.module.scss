@@ -12,6 +12,10 @@
 
     margin: auto;
     padding-inline: $padding;
+
+    @media (max-width: 768px) {
+        padding-inline: $padding-mobile;
+    }
     background-color: $color-surface;
     
     display: flex;
