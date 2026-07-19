@@ -280,7 +280,7 @@ export async function savePaperDoc(data: PaperDocData): Promise<string> {
 }
 
 export async function updatePaperDoc(id: string, data: PaperDocData): Promise<void> {
-  await updateDoc(doc(db, "papers", id), data);
+  await updateDoc(doc(db, "papers", id), { ...data });
 }
 
 export async function deletePaperDoc(id: string): Promise<void> {

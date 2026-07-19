@@ -43,7 +43,6 @@ const EMPTY_FORM: PaperFormData = {
   ],
 };
 
-// 기존 string 데이터 → TipTap JSON 변환
 function toEditorContent(content: string | object | undefined | null): object | null {
   if (!content) return null;
   if (typeof content === "object") return content as object;
@@ -187,31 +186,19 @@ export default function CardNewsPaperManager() {
     );
   }
 
-  // ── 논문 폼 뷰 ───────────────────────────────────────────
+  // ── 논문 폼 뷰 (스텝) ─────────────────────────────────────
 
   if (showForm) {
     return (
-      <div className={s.section}>
-        <div className={s.formPageHeader}>
-          <button type="button" className={s.backBtn} onClick={cancelForm}>
-            <ArrowLeft size={15} /> 목록으로
-          </button>
-          <div className={s.formPageMeta}>
-            <span className={s.formPageLabel}>{selectedCn.title}</span>
-            <h2 className={s.sectionTitle}>
-              {editingPaperId ? "논문 수정" : "논문 추가"}
-            </h2>
-          </div>
-          <div className={s.formPageActions}>
-            <button type="button" className={s.cancelBtn} onClick={cancelForm}>취소</button>
-            <button type="button" className={s.saveBtn} onClick={handleSave} disabled={saving}>
-              {saving ? "저장 중..." : editingPaperId ? "수정 완료" : "저장"}
-            </button>
-          </div>
-        </div>
-
-        <PaperForm form={form} onUpdate={updateField} />
-      </div>
+      <PaperForm
+        form={form}
+        onUpdate={updateField}
+        editingPaperId={editingPaperId}
+        selectedCn={selectedCn}
+        saving={saving}
+        onCancel={cancelForm}
+        onSave={handleSave}
+      />
     );
   }
 
@@ -273,14 +260,20 @@ export default function CardNewsPaperManager() {
   );
 }
 
-// ── 논문 폼 ───────────────────────────────────────────────
+// ── 논문 폼 (2단계 스텝) ───────────────────────────────────
 
 interface PaperFormProps {
   form: PaperFormData;
   onUpdate: <K extends keyof PaperFormData>(key: K, value: PaperFormData[K]) => void;
+  editingPaperId: string | null;
+  selectedCn: CardNewsSummary;
+  saving: boolean;
+  onCancel: () => void;
+  onSave: () => void;
 }
 
-function PaperForm({ form, onUpdate }: PaperFormProps) {
+function PaperForm({ form, onUpdate, editingPaperId, selectedCn, saving, onCancel, onSave }: PaperFormProps) {
+  const [step, setStep] = useState(1);
   const [activeSummaryIdx, setActiveSummaryIdx] = useState(0);
 
   function addSummary() {
@@ -312,143 +305,159 @@ function PaperForm({ form, onUpdate }: PaperFormProps) {
 
   const activeSection = form.summary[activeSummaryIdx];
 
-  return (
-    <div className={s.form}>
-      {/* 기본 정보 */}
-      <div className={s.formCard}>
-        <h3 className={s.formCardTitle}>기본 정보</h3>
+  // ── Step 1: 기본 정보 ─────────────────────────────────────
 
-        <div className={s.row}>
+  if (step === 1) {
+    return (
+      <div className={s.stepWrapper}>
+        <div className={s.stepHeader}>
+          <button type="button" className={s.backBtn} onClick={onCancel}>
+            <ArrowLeft size={15} /> 목록으로
+          </button>
+          <div className={s.stepIndicator}>
+            <span className={s.stepDot} data-active="true" />
+            <span className={s.stepLine} />
+            <span className={s.stepDot} />
+          </div>
+          <span className={s.stepLabel}>1단계 · 기본 정보</span>
+        </div>
+
+        {/* 연결된 카드뉴스 */}
+        <div className={s.cnInfoCard}>
+          {selectedCn.thumbnail && (
+            <img src={selectedCn.thumbnail} alt={selectedCn.title} className={s.cnThumb} />
+          )}
+          <div className={s.cnInfoText}>
+            <span className={s.cnInfoLabel}>연결된 카드뉴스</span>
+            <p className={s.cnInfoTitle}>{selectedCn.title}</p>
+            <span className={s.cnCategory}>{selectedCn.category}</span>
+          </div>
+        </div>
+
+        {/* 기본 정보 폼 */}
+        <div className={s.formCard}>
+          <h3 className={s.formCardTitle}>{editingPaperId ? "논문 수정" : "논문 추가"}</h3>
+
           <div className={s.field}>
             <label className={s.label}>논문 제목 *</label>
-            <input
-              className={s.input}
-              value={form.title}
-              onChange={(e) => onUpdate("title", e.target.value)}
-              placeholder="논문 제목을 입력하세요"
-            />
+            <input className={s.input} value={form.title} onChange={(e) => onUpdate("title", e.target.value)} placeholder="논문 제목을 입력하세요" />
           </div>
+
           <div className={s.field}>
             <label className={s.label}>저자</label>
-            <input
-              className={s.input}
-              value={form.authors}
-              onChange={(e) => onUpdate("authors", e.target.value)}
-              placeholder="저자명"
-            />
+            <input className={s.input} value={form.authors} onChange={(e) => onUpdate("authors", e.target.value)} placeholder="저자명" />
+          </div>
+
+          <div className={s.twoCol}>
+            <div className={s.field}>
+              <label className={s.label}>저널/출처</label>
+              <input className={s.input} value={form.journal} onChange={(e) => onUpdate("journal", e.target.value)} placeholder="저널명" />
+            </div>
+            <div className={s.field}>
+              <label className={s.label}>연도</label>
+              <input className={s.input} type="number" value={form.year} onChange={(e) => onUpdate("year", Number(e.target.value))} />
+            </div>
+          </div>
+
+          <div className={s.twoCol}>
+            <div className={s.field}>
+              <label className={s.label}>원문 링크</label>
+              <input className={s.input} value={form.url} onChange={(e) => onUpdate("url", e.target.value)} placeholder="https://..." />
+            </div>
+            <div className={s.field}>
+              <label className={s.label}>순서</label>
+              <input className={s.input} type="number" min={1} value={form.order} onChange={(e) => onUpdate("order", Number(e.target.value))} />
+            </div>
+          </div>
+
+          <div className={s.field}>
+            <label className={s.label}>논문 유형</label>
+            <div className={s.typeGroup}>
+              {PAPER_TYPES.map((type) => (
+                <button key={type} type="button"
+                  className={[s.typeBtn, form.type === type ? s.selected : ""].join(" ")}
+                  onClick={() => onUpdate("type", type)}>
+                  {type}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className={s.row}>
-          <div className={s.field}>
-            <label className={s.label}>저널/출처</label>
-            <input
-              className={s.input}
-              value={form.journal}
-              onChange={(e) => onUpdate("journal", e.target.value)}
-              placeholder="저널명"
-            />
-          </div>
-          <div className={s.field}>
-            <label className={s.label}>연도</label>
-            <input
-              className={s.input}
-              type="number"
-              value={form.year}
-              onChange={(e) => onUpdate("year", Number(e.target.value))}
-            />
-          </div>
-        </div>
-
-        <div className={s.row}>
-          <div className={s.field}>
-            <label className={s.label}>원문 링크</label>
-            <input
-              className={s.input}
-              value={form.url}
-              onChange={(e) => onUpdate("url", e.target.value)}
-              placeholder="https://..."
-            />
-          </div>
-          <div className={s.field}>
-            <label className={s.label}>순서</label>
-            <input
-              className={s.input}
-              type="number"
-              min={1}
-              value={form.order}
-              onChange={(e) => onUpdate("order", Number(e.target.value))}
-            />
-          </div>
-        </div>
-
-        <div className={s.field}>
-          <label className={s.label}>논문 유형</label>
-          <div className={s.typeGroup}>
-            {PAPER_TYPES.map((type) => (
-              <button
-                key={type}
-                type="button"
-                className={[s.typeBtn, form.type === type ? s.selected : ""].join(" ")}
-                onClick={() => onUpdate("type", type)}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* 섹션 작성 */}
-      <div className={s.formCard}>
-        <div className={s.formCardTitleRow}>
-          <h3 className={s.formCardTitle}>섹션 작성</h3>
-          <button type="button" className={s.addSmallBtn} onClick={addSummary}>
-            + 섹션 추가
+        <div className={s.stepActions}>
+          <button type="button" className={s.cancelBtn} onClick={onCancel}>취소</button>
+          <button type="button" className={s.nextBtn} onClick={() => setStep(2)}>
+            다음 · 섹션 작성 →
           </button>
         </div>
+      </div>
+    );
+  }
 
-        <div className={s.sectionPanel}>
-          {/* 왼쪽: 섹션 목록 */}
-          <div className={s.sectionList}>
-            {form.summary.map((item, i) => (
-              <div
-                key={i}
-                className={[s.sectionListItem, activeSummaryIdx === i ? s.sectionListItemActive : ""].join(" ")}
-                onClick={() => setActiveSummaryIdx(i)}
-              >
-                <span className={s.sectionListLabel}>{item.heading || `섹션 ${i + 1}`}</span>
-                {form.summary.length > 1 && (
-                  <button
-                    type="button"
-                    className={s.removeSectionBtn}
-                    onClick={(e) => { e.stopPropagation(); removeSummary(i); }}
-                  >
-                    <X size={11} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
+  // ── Step 2: 섹션 작성 ─────────────────────────────────────
 
-          {/* 오른쪽: 에디터 */}
-          {activeSection && (
-            <div className={s.sectionEditor}>
-              <input
-                className={s.sectionHeadingInput}
-                value={activeSection.heading}
-                onChange={(e) => updateHeading(activeSummaryIdx, e.target.value)}
-                placeholder="섹션 제목"
-              />
-              <ContentEditor
-                key={activeSummaryIdx}
-                terms={[]}
-                initialContent={activeSection.content ?? undefined}
-                onChange={(v) => updateContent(activeSummaryIdx, v)}
-              />
-            </div>
-          )}
+  return (
+    <div className={s.stepWrapper}>
+      <div className={s.stepHeader}>
+        <button type="button" className={s.backBtn} onClick={() => setStep(1)}>
+          <ArrowLeft size={15} /> 이전
+        </button>
+        <div className={s.stepIndicator}>
+          <span className={s.stepDot} />
+          <span className={s.stepLine} />
+          <span className={s.stepDot} data-active="true" />
         </div>
+        <span className={s.stepLabel}>2단계 · 섹션 작성</span>
+      </div>
+
+      {/* 섹션 탭 */}
+      <div className={s.sectionTabBar}>
+        {form.summary.map((item, i) => (
+          <button
+            key={i}
+            type="button"
+            className={[s.sectionTab, activeSummaryIdx === i ? s.sectionTabActive : ""].join(" ")}
+            onClick={() => setActiveSummaryIdx(i)}
+          >
+            {item.heading || `섹션 ${i + 1}`}
+            {form.summary.length > 1 && (
+              <span
+                className={s.removeTabBtn}
+                onClick={(e) => { e.stopPropagation(); removeSummary(i); }}
+              >
+                <X size={10} />
+              </span>
+            )}
+          </button>
+        ))}
+        <button type="button" className={s.addTabBtn} onClick={addSummary}>
+          <Plus size={13} /> 섹션 추가
+        </button>
+      </div>
+
+      {/* 에디터 영역 */}
+      {activeSection && (
+        <div className={s.editorArea}>
+          <input
+            className={s.sectionHeadingInput}
+            value={activeSection.heading}
+            onChange={(e) => updateHeading(activeSummaryIdx, e.target.value)}
+            placeholder="섹션 제목"
+          />
+          <ContentEditor
+            key={activeSummaryIdx}
+            terms={[]}
+            initialContent={activeSection.content ?? undefined}
+            onChange={(v) => updateContent(activeSummaryIdx, v)}
+          />
+        </div>
+      )}
+
+      <div className={s.stepActions}>
+        <button type="button" className={s.cancelBtn} onClick={onCancel}>취소</button>
+        <button type="button" className={s.saveBtn} onClick={onSave} disabled={saving}>
+          {saving ? "저장 중..." : editingPaperId ? "수정 완료" : "저장"}
+        </button>
       </div>
     </div>
   );

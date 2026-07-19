@@ -1,3 +1,5 @@
+// ── 카드뉴스 선택 뷰 ──────────────────────────────────────
+
 .section {
   display: flex;
   flex-direction: column;
@@ -225,14 +227,6 @@
   flex: 1;
 }
 
-.paperThumb {
-  width: 52px;
-  height: 34px;
-  object-fit: cover;
-  border-radius: $radius-8;
-  flex-shrink: 0;
-}
-
 .paperTextInfo {
   display: flex;
   flex-direction: column;
@@ -324,9 +318,15 @@
   }
 }
 
-// ── 논문 폼 페이지 헤더 ────────────────────────────────────
+// ── 스텝 공통 ─────────────────────────────────────────────
 
-.formPageHeader {
+.stepWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-24;
+}
+
+.stepHeader {
   display: flex;
   align-items: center;
   gap: $spacing-16;
@@ -334,23 +334,45 @@
   border-bottom: 2px solid $color-border;
 }
 
-.formPageMeta {
-  flex: 1;
+.stepIndicator {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: $spacing-6;
 }
 
-.formPageLabel {
-  font-size: 12px;
-  color: $color-text-subtle;
-  font-weight: 500;
-}
-
-.formPageActions {
-  display: flex;
-  gap: $spacing-10;
+.stepDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: $color-border;
   flex-shrink: 0;
+  transition: background-color 0.2s ease;
+
+  &[data-active="true"] {
+    background-color: $color-surface-brand;
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.stepLine {
+  width: 24px;
+  height: 2px;
+  background-color: $color-border;
+}
+
+.stepLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  margin-left: auto;
+}
+
+.stepActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: $spacing-10;
+  padding-top: $spacing-8;
 }
 
 .cancelBtn {
@@ -362,66 +384,113 @@
   font-weight: 600;
   color: $color-text-subtle;
   cursor: pointer;
+  transition: all 0.15s ease;
 
   &:hover { border-color: $color-text-subtle; color: $color-text; }
+}
+
+.nextBtn {
+  padding: $spacing-10 $spacing-24;
+  border: none;
+  border-radius: $radius-8;
+  background-color: $color-surface-brand;
+  color: $color-text-white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover { background-color: $color-surface-brand-heavy; }
 }
 
 .saveBtn {
   padding: $spacing-10 $spacing-24;
   border: none;
   border-radius: $radius-8;
-  background-color: $color-text;
-  color: $color-surface;
+  background-color: $color-surface-brand;
+  color: $color-text-white;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: background-color 0.15s ease;
 
-  &:hover { opacity: 0.8; }
+  &:hover { background-color: $color-surface-brand-heavy; }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 
-// ── 논문 폼 ───────────────────────────────────────────────
+// ── Step 1: 기본 정보 ─────────────────────────────────────
 
-.form {
+.cnInfoCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-16;
+  padding: $spacing-16 $spacing-20;
+  border: 1px solid $color-border;
+  border-radius: $radius-12;
+  background-color: $color-surface-subtle;
+}
+
+.cnThumb {
+  width: 96px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: $radius-8;
+  flex-shrink: 0;
+}
+
+.cnInfoText {
   display: flex;
   flex-direction: column;
-  gap: $spacing-16;
+  gap: $spacing-4;
+}
+
+.cnInfoLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: $color-text-subtle;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cnInfoTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: $color-text;
+  margin: 0;
+}
+
+.cnCategory {
+  font-size: 12px;
+  color: $color-text-subtle;
 }
 
 .formCard {
   border: 1px solid $color-border;
   border-radius: $radius-12;
-  padding: $spacing-20;
+  padding: $spacing-24;
   background-color: $color-surface;
   display: flex;
   flex-direction: column;
-  gap: $spacing-14;
+  gap: $spacing-16;
 }
 
 .formCardTitle {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: $color-text;
-  padding-bottom: $spacing-12;
+  padding-bottom: $spacing-14;
   border-bottom: 1px solid $color-border;
   margin: 0;
 }
 
-.formCardTitleRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-bottom: $spacing-12;
-  border-bottom: 1px solid $color-border;
-}
-
-.row {
+.twoCol {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: $spacing-12;
+  gap: $spacing-16;
 
-  @media (max-width: 600px) { grid-template-columns: 1fr; }
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .field {
@@ -437,6 +506,8 @@
 }
 
 .input {
+  width: 100%;
+  box-sizing: border-box;
   padding: $spacing-10 $spacing-12;
   border: 1px solid $color-border;
   border-radius: $radius-8;
@@ -446,24 +517,7 @@
   outline: none;
   transition: border-color 0.15s ease;
 
-  &:focus { border-color: $color-text-subtle; }
-  &::placeholder { color: $color-text-subtle; }
-}
-
-.textarea {
-  padding: $spacing-10 $spacing-12;
-  border: 1px solid $color-border;
-  border-radius: $radius-8;
-  font-size: 14px;
-  color: $color-text;
-  background-color: $color-surface;
-  outline: none;
-  resize: vertical;
-  font-family: inherit;
-  line-height: 1.6;
-  transition: border-color 0.15s ease;
-
-  &:focus { border-color: $color-text-subtle; }
+  &:focus { border-color: $color-surface-brand; }
   &::placeholder { color: $color-text-subtle; }
 }
 
@@ -474,7 +528,7 @@
 }
 
 .typeBtn {
-  padding: 6px 16px;
+  padding: 7px 18px;
   border-radius: $radius-full;
   border: 1px solid $color-border;
   background-color: $color-surface;
@@ -486,135 +540,97 @@
   &:hover { border-color: $color-text-subtle; color: $color-text; }
 
   &.selected {
-    background-color: $color-text;
-    border-color: $color-text;
-    color: $color-surface;
+    background-color: $color-surface-brand;
+    border-color: $color-surface-brand;
+    color: $color-text-white;
     font-weight: 600;
   }
 }
 
-// ── 섹션 패널 (split layout) ──────────────────────────────
+// ── Step 2: 섹션 작성 ─────────────────────────────────────
 
-.sectionPanel {
-  display: flex;
-  gap: $spacing-16;
-  min-height: 400px;
-
-  @media (max-width: 700px) {
-    flex-direction: column;
-    min-height: unset;
-  }
-}
-
-.sectionList {
-  width: 180px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-
-  @media (max-width: 700px) {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-}
-
-.sectionListItem {
+.sectionTabBar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: $spacing-10 $spacing-12;
-  border-radius: $radius-8;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: all 0.12s ease;
-  color: $color-text-subtle;
+  gap: $spacing-6;
+  flex-wrap: wrap;
+}
+
+.sectionTab {
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+  padding: $spacing-8 $spacing-16;
+  border-radius: $radius-full;
+  border: 1px solid $color-border;
+  background-color: $color-surface;
   font-size: 14px;
   font-weight: 500;
+  color: $color-text-subtle;
+  cursor: pointer;
+  transition: all 0.15s ease;
 
   &:hover {
-    background-color: $color-surface-subtle;
+    border-color: $color-text-subtle;
     color: $color-text;
   }
 
-  &.sectionListItemActive {
-    background-color: $color-surface-subtle;
-    border-color: $color-border;
-    color: $color-text;
+  &.sectionTabActive {
+    background-color: $color-surface-brand;
+    border-color: $color-surface-brand;
+    color: $color-text-white;
     font-weight: 700;
   }
 }
 
-.sectionListLabel {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-}
-
-.removeSectionBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: $color-text-subtle;
+.removeTabBtn {
   display: flex;
   align-items: center;
-  padding: 2px;
-  border-radius: 4px;
-  opacity: 0;
+  opacity: 0.6;
   transition: opacity 0.1s ease;
-  flex-shrink: 0;
+  line-height: 0;
 
-  .sectionListItem:hover & { opacity: 1; }
-  &:hover { color: #DC2626; }
+  &:hover { opacity: 1; }
+
+  .sectionTabActive & { opacity: 0.7; }
 }
 
-.addSmallBtn {
-  background: none;
+.addTabBtn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-4;
+  padding: $spacing-8 $spacing-14;
+  border-radius: $radius-full;
   border: 1px dashed $color-border;
-  border-radius: $radius-8;
-  padding: $spacing-10 $spacing-12;
+  background: none;
   font-size: 13px;
   font-weight: 500;
   color: $color-text-subtle;
   cursor: pointer;
-  text-align: left;
-  margin-top: $spacing-4;
-  transition: all 0.12s ease;
+  transition: all 0.15s ease;
 
   &:hover { border-color: $color-text-subtle; color: $color-text; }
 }
 
-.sectionEditor {
-  flex: 1;
+.editorArea {
   display: flex;
   flex-direction: column;
-  gap: $spacing-10;
-  min-width: 0;
-  border-left: 1px solid $color-border;
-  padding-left: $spacing-16;
-
-  @media (max-width: 700px) {
-    border-left: none;
-    border-top: 1px solid $color-border;
-    padding-left: 0;
-    padding-top: $spacing-16;
-  }
+  gap: $spacing-12;
 }
 
 .sectionHeadingInput {
   width: 100%;
-  padding: $spacing-8 $spacing-10;
+  box-sizing: border-box;
+  padding: $spacing-10 $spacing-12;
   border: 1px solid $color-border;
   border-radius: $radius-8;
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 700;
   color: $color-text;
   background: none;
   outline: none;
   transition: border-color 0.15s ease;
 
-  &:focus { border-color: $color-text-subtle; }
+  &:focus { border-color: $color-surface-brand; }
   &::placeholder { color: $color-text-subtle; font-weight: 400; }
 }
