@@ -39,7 +39,7 @@ export default function LoginModal({ providers = ["google", "kakao", "naver"], s
   return (
     <>
       <div className={s.container}>
-        <img src="/partiz.svg" alt="logo" width="111" height="32" />
+        <img src="/logo.svg" alt="logo" width="111" height="32" />
         <Spacing size={12} />
         <div className={s.login_container}>
         </div>

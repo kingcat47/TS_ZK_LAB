@@ -34,7 +34,7 @@ export default function Header() {
         <div className={s.header_content}>
           <div className={s.right}>
             <Link to="/" className={s.logoLink}>
-              <img src="/logo.svg" alt="logo" width="77" height="22" />
+              <img src="/logo.svg" alt="logo" width="105" height="30" />
             </Link>
             <nav className={s.items} aria-label="주요 메뉴">
               <HeaderItem text="카드뉴스" icon={Newspaper} href="/" isActive={pathname === "/"} />
