@@ -90,11 +90,14 @@ export default function Header() {
           </div>
         </div>
         {isMenuOpen && (
-          <nav className={s.mobile_nav} aria-label="모바일 메뉴">
-            <HeaderItem text="카드뉴스" icon={Newspaper} href="/" isActive={pathname === "/"} />
-            <HeaderItem text="논문" icon={BookOpen} href="/papers" isActive={pathname.startsWith("/papers")} />
-            <HeaderItem text="찜한 목록" icon={Bookmark} href="/bookmarks" isActive={pathname.startsWith("/bookmarks")} />
-          </nav>
+          <>
+            <div className={s.mobile_backdrop} onClick={() => setIsMenuOpen(false)} />
+            <nav className={s.mobile_nav} aria-label="모바일 메뉴" onClick={() => setIsMenuOpen(false)}>
+              <HeaderItem text="카드뉴스" icon={Newspaper} href="/" isActive={pathname === "/"} />
+              <HeaderItem text="논문" icon={BookOpen} href="/papers" isActive={pathname.startsWith("/papers")} />
+              <HeaderItem text="찜한 목록" icon={Bookmark} href="/bookmarks" isActive={pathname.startsWith("/bookmarks")} />
+            </nav>
+          </>
         )}
       </header>
 

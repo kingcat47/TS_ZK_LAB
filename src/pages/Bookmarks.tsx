@@ -102,26 +102,44 @@ export default function Bookmarks() {
         </div>
       ) : (
         <>
-          {showCardNews && bookmarkedCardNews.length > 0 && (
-            <section className={s.section}>
-              <h2 className={s.sectionTitle}>카드뉴스</h2>
-              <div className={s.grid}>
-                {bookmarkedCardNews.map((item) => (
-                  <CardNews key={item.id} {...item} />
-                ))}
-              </div>
-            </section>
+          {showCardNews && (
+            bookmarkedCardNews.length > 0 ? (
+              <section className={s.section}>
+                <h2 className={s.sectionTitle}>카드뉴스</h2>
+                <div className={s.grid}>
+                  {bookmarkedCardNews.map((item) => (
+                    <CardNews key={item.id} {...item} />
+                  ))}
+                </div>
+              </section>
+            ) : (
+              !isEmpty && (
+                <div className={s.emptyState}>
+                  <p className={s.emptyTitle}>찜한 카드뉴스가 없습니다.</p>
+                  <p className={s.emptyDesc}>카드뉴스의 북마크 버튼을 눌러 저장해보세요.</p>
+                </div>
+              )
+            )
           )}
 
-          {showPapers && bookmarkedPapers.length > 0 && (
-            <section className={s.section}>
-              <h2 className={s.sectionTitle}>논문</h2>
-              <div className={s.grid}>
-                {bookmarkedPapers.map(({ cardNews, papers }) => (
-                  <PaperCollectionCard key={cardNews.id} cardNews={cardNews} papers={papers} />
-                ))}
-              </div>
-            </section>
+          {showPapers && (
+            bookmarkedPapers.length > 0 ? (
+              <section className={s.section}>
+                <h2 className={s.sectionTitle}>논문</h2>
+                <div className={s.grid}>
+                  {bookmarkedPapers.map(({ cardNews, papers }) => (
+                    <PaperCollectionCard key={cardNews.id} cardNews={cardNews} papers={papers} />
+                  ))}
+                </div>
+              </section>
+            ) : (
+              !isEmpty && (
+                <div className={s.emptyState}>
+                  <p className={s.emptyTitle}>찜한 논문이 없습니다.</p>
+                  <p className={s.emptyDesc}>논문 목록에서 북마크 버튼을 눌러 저장해보세요.</p>
+                </div>
+              )
+            )
           )}
         </>
       )}

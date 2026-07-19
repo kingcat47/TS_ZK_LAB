@@ -150,7 +150,7 @@
   border: none;
   cursor: pointer;
   padding: 6px;
-  color: $color-text;
+  color: $color-text-subtle;
   border-radius: $radius-8;
 
   &:hover {
@@ -162,6 +162,13 @@
     align-items: center;
     justify-content: center;
   }
+}
+
+.mobile_backdrop {
+  position: fixed;
+  inset: 0;
+  top: 74px;
+  z-index: 98;
 }
 
 .mobile_nav {
